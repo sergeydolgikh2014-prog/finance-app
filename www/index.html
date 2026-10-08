@@ -1,0 +1,4057 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#1a1a2e">
+<title>💰 Мой Финансовый Путь</title>
+<link rel="manifest" href="manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Финансы">
+<meta name="mobile-web-app-capable" content="yes">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  :root {
+    --pink: #ff69b4;
+    --gold: #ffd700;
+    --cyan: #00ffff;
+    --green: #00ff88;
+    --red: #ff4466;
+    --purple: #8a2be2;
+    --card-bg: rgba(255, 255, 255, 0.06);
+    --border: rgba(255, 105, 180, 0.3);
+  }
+
+  html, body { height: 100%; overflow: hidden; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(135deg, #0a0a1a 0%, #16213e 50%, #0f3460 100%);
+    color: #e8e8e8;
+    -webkit-font-smoothing: antialiased;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0; left: 0;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(2px 2px at 20% 30%, #fff, transparent),
+      radial-gradient(1px 1px at 60% 70%, #ffd700, transparent),
+      radial-gradient(1px 1px at 80% 20%, #fff, transparent),
+      radial-gradient(2px 2px at 40% 80%, #ff69b4, transparent),
+      radial-gradient(1px 1px at 90% 50%, #fff, transparent);
+    background-size: 200% 200%;
+    animation: stars 30s linear infinite;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.7;
+  }
+
+  @keyframes stars {
+    0% { background-position: 0% 0%; }
+    100% { background-position: 100% 100%; }
+  }
+
+  .screen {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    z-index: 1;
+    opacity: 0;
+    transform: translateX(30px);
+    pointer-events: none;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+  }
+
+  .screen.active {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
+  }
+
+  .screen-content {
+    max-width: 720px;
+    width: 100%;
+    margin: 0 auto;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding-top: 70px;
+    padding-bottom: 100px;
+  }
+
+  h1 {
+    font-size: clamp(1.6em, 5vw, 2.4em);
+    background: linear-gradient(90deg, var(--pink), var(--gold), var(--cyan));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-align: center;
+    margin-bottom: 12px;
+    line-height: 1.2;
+    font-weight: 800;
+  }
+
+  h2 {
+    font-size: clamp(1.3em, 4vw, 1.8em);
+    color: var(--gold);
+    margin-bottom: 16px;
+    text-align: center;
+    font-weight: 700;
+  }
+
+  p { color: #c0c0d8; line-height: 1.6; font-size: clamp(0.95em, 2.6vw, 1.05em); }
+
+  #screen-welcome .screen-content {
+    justify-content: center;
+    text-align: center;
+    padding-top: 20px;
+  }
+
+  .hero-emoji {
+    font-size: clamp(4em, 18vw, 7em);
+    text-align: center;
+    margin-bottom: 20px;
+    animation: float 3s ease-in-out infinite;
+    filter: drop-shadow(0 0 30px rgba(255, 105, 180, 0.6));
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+  }
+
+  .welcome-text {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 24px 20px;
+    margin: 20px 0;
+    backdrop-filter: blur(10px);
+  }
+
+  .welcome-text p { margin-bottom: 12px; }
+
+  .motivation {
+    font-size: clamp(1.1em, 3.2vw, 1.3em);
+    color: var(--gold);
+    font-weight: 600;
+    font-style: italic;
+    margin-top: 20px;
+    padding: 16px;
+    border-left: 4px solid var(--pink);
+    background: rgba(255, 105, 180, 0.08);
+    border-radius: 8px;
+    text-align: left;
+    line-height: 1.5;
+  }
+
+  .btn {
+    padding: 16px 28px;
+    background: linear-gradient(135deg, var(--pink), #ff1493);
+    border: none;
+    border-radius: 16px;
+    color: #fff;
+    font-size: clamp(1em, 2.8vw, 1.15em);
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.25s;
+    box-shadow: 0 6px 24px rgba(255, 20, 147, 0.4);
+    font-family: inherit;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 56px;
+    width: 100%;
+  }
+
+  .btn:active { transform: scale(0.97); }
+
+  .btn.gold { background: linear-gradient(135deg, var(--gold), #ff8c00); color: #1a1a2e; box-shadow: 0 6px 24px rgba(255, 215, 0, 0.4); }
+  .btn.cyan { background: linear-gradient(135deg, var(--cyan), #0080ff); box-shadow: 0 6px 24px rgba(0, 255, 255, 0.4); }
+  .btn.green { background: linear-gradient(135deg, var(--green), #00cc66); color: #1a1a2e; box-shadow: 0 6px 24px rgba(0, 255, 136, 0.4); }
+  .btn.red { background: linear-gradient(135deg, var(--red), #cc0033); box-shadow: 0 6px 24px rgba(255, 68, 102, 0.4); }
+  .btn.purple { background: linear-gradient(135deg, var(--purple), #5a1a9a); box-shadow: 0 6px 24px rgba(138, 43, 226, 0.4); }
+  .btn.orange { background: linear-gradient(135deg, #ff8c00, #ff4500); box-shadow: 0 6px 24px rgba(255, 140, 0, 0.4); }
+
+  .btn.ghost {
+    background: rgba(255, 255, 255, 0.06);
+    border: 2px solid var(--border);
+    box-shadow: none;
+    color: #e8e8e8;
+  }
+
+  .btn.small { padding: 10px 14px; font-size: 0.85em; min-height: 44px; width: auto; }
+
+  .back-btn {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(255, 105, 180, 0.95), rgba(138, 43, 226, 0.95));
+    border: 3px solid rgba(255, 215, 0, 0.7);
+    backdrop-filter: blur(10px);
+    color: #fff;
+    font-size: 1.6em;
+    font-weight: 700;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    transition: all 0.25s;
+    box-shadow: 0 4px 20px rgba(255, 105, 180, 0.6), 0 0 30px rgba(138, 43, 226, 0.4);
+    pointer-events: auto;
+    font-family: inherit;
+    line-height: 1;
+  }
+
+  .back-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 30px rgba(255, 105, 180, 0.9), 0 0 40px rgba(255, 215, 0, 0.5);
+  }
+
+  .back-btn:active { transform: scale(0.9); }
+  .back-btn.visible { display: flex !important; }
+
+  .role-btn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 10px 16px;
+    border-radius: 30px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 2px solid var(--border);
+    backdrop-filter: blur(10px);
+    color: #fff;
+    font-size: 0.9em;
+    font-weight: 700;
+    cursor: pointer;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.25s;
+    font-family: inherit;
+  }
+
+  .role-btn:hover { background: rgba(255, 255, 255, 0.15); border-color: var(--gold); }
+
+  .role-btn.admin {
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.3), rgba(255, 140, 0, 0.2));
+    border-color: var(--gold);
+    color: var(--gold);
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+  }
+
+  @media (max-width: 480px) {
+    .role-btn { padding: 8px 12px; font-size: 0.8em; top: 14px; right: 14px; }
+  }
+
+  .menu-card {
+    background: var(--card-bg);
+    border: 2px solid var(--border);
+    border-radius: 22px;
+    padding: 26px 22px;
+    margin-bottom: 16px;
+    cursor: pointer;
+    transition: all 0.3s;
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .menu-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255, 105, 180, 0.15), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .menu-card:active { transform: scale(0.98); }
+  .menu-card:active::before { opacity: 1; }
+  .menu-card:hover { border-color: var(--gold); }
+
+  .menu-icon { font-size: 2.6em; flex-shrink: 0; filter: drop-shadow(0 0 12px rgba(255, 215, 0, 0.5)); }
+  .menu-text { flex: 1; }
+  .menu-title { font-size: 1.15em; font-weight: 700; color: #fff; margin-bottom: 6px; }
+  .menu-desc { font-size: 0.88em; color: #a0a0c0; line-height: 1.4; }
+
+  .form-group { margin-bottom: 18px; }
+
+  .form-group label {
+    display: block;
+    font-size: 0.9em;
+    color: #b0b0d0;
+    margin-bottom: 8px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+
+  input, select, textarea {
+    width: 100%;
+    padding: 16px;
+    background: rgba(0, 0, 0, 0.35);
+    border: 2px solid var(--border);
+    border-radius: 14px;
+    color: #fff;
+    font-size: 1em;
+    transition: all 0.25s;
+    font-family: inherit;
+    min-height: 54px;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  input:focus, select:focus {
+    outline: none;
+    border-color: var(--pink);
+    box-shadow: 0 0 20px rgba(255, 105, 180, 0.4);
+    background: rgba(0, 0, 0, 0.5);
+  }
+
+  input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; }
+
+  .credit-card {
+    background: var(--card-bg);
+    border: 2px solid var(--border);
+    border-radius: 20px;
+    padding: 18px 20px;
+    margin-bottom: 14px;
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s;
+  }
+
+  .credit-card.paid-off {
+    border-color: var(--green);
+    background: rgba(0, 255, 136, 0.06);
+  }
+
+  .credit-card.archived {
+    border-color: rgba(138, 43, 226, 0.5);
+    background: rgba(138, 43, 226, 0.08);
+  }
+
+  .credit-card.due-today {
+    border-color: var(--gold);
+    animation: pulse-gold 2s infinite;
+  }
+
+  @keyframes pulse-gold {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.3); }
+    50% { box-shadow: 0 0 0 12px rgba(255, 215, 0, 0); }
+  }
+
+  .credit-compact {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+  }
+
+  .credit-compact-info { flex: 1; min-width: 0; }
+
+  .credit-compact-name {
+    font-size: 1.05em;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .credit-card.paid-off .credit-compact-name { color: var(--green); }
+
+  .credit-compact-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    font-size: 0.85em;
+    color: #a0a0c0;
+  }
+
+  .credit-compact-meta strong { color: var(--gold); }
+
+  .credit-compact-amount {
+    text-align: right;
+    flex-shrink: 0;
+    margin-right: 4px;
+  }
+
+  .credit-compact-amount .val {
+    font-size: 1.05em;
+    font-weight: 800;
+    color: var(--gold);
+    display: block;
+  }
+
+  .credit-compact-amount .lbl {
+    font-size: 0.72em;
+    color: #a0a0c0;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+
+  .credit-arrow {
+    font-size: 1.3em;
+    color: var(--gold);
+    transition: transform 0.3s;
+    flex-shrink: 0;
+    width: 24px;
+    text-align: center;
+  }
+
+  .credit-arrow.open { transform: rotate(180deg); }
+
+  .credit-details {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease;
+  }
+
+  .credit-details.open { max-height: 6000px; }
+
+  .credit-details-inner {
+    padding-top: 16px;
+    margin-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .credit-status-badge {
+    font-size: 0.72em;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+  }
+
+  .badge-active { background: rgba(255, 105, 180, 0.25); color: var(--pink); }
+  .badge-today { background: rgba(255, 215, 0, 0.25); color: var(--gold); }
+  .badge-paid { background: rgba(0, 255, 136, 0.25); color: var(--green); }
+  .badge-soon { background: rgba(0, 255, 255, 0.25); color: var(--cyan); }
+  .badge-archived { background: rgba(138, 43, 226, 0.3); color: #c0a0ff; }
+
+  .credit-info-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 0.92em;
+    gap: 10px;
+  }
+
+  .credit-info-row:last-of-type { border-bottom: none; }
+  .credit-info-row .label { color: #a0a0c0; }
+  .credit-info-row .value { color: var(--gold); font-weight: 700; text-align: right; }
+
+  .credit-info-row.decreased .value {
+    color: var(--green);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .decrease-tag {
+    display: inline-block;
+    font-size: 0.7em;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, rgba(0, 255, 136, 0.3), rgba(255, 215, 0, 0.2));
+    color: var(--green);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    animation: decrease-pulse 2s infinite;
+    box-shadow: 0 0 12px rgba(0, 255, 136, 0.3);
+  }
+
+  @keyframes decrease-pulse {
+    0%, 100% { box-shadow: 0 0 12px rgba(0, 255, 136, 0.3); }
+    50% { box-shadow: 0 0 20px rgba(0, 255, 136, 0.6); }
+  }
+
+  .old-payment {
+    text-decoration: line-through;
+    opacity: 0.55;
+    font-weight: 500;
+    font-size: 0.92em;
+    color: #a0a0c0;
+  }
+
+  .new-payment {
+    color: var(--green);
+    font-weight: 800;
+  }
+
+  .credit-progress {
+    height: 10px;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 5px;
+    overflow: hidden;
+    margin: 14px 0 8px;
+    position: relative;
+  }
+
+  .credit-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--pink), var(--gold));
+    border-radius: 5px;
+    transition: width 0.6s ease;
+  }
+
+  .credit-progress-fill.full {
+    background: linear-gradient(90deg, var(--green), #00cc66);
+  }
+
+  .credit-progress-text {
+    text-align: center;
+    font-size: 0.85em;
+    color: var(--gold);
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+
+  .credit-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+  }
+
+  .credit-actions .btn {
+    flex: 1;
+    min-width: 120px;
+    padding: 11px 12px;
+    font-size: 0.82em;
+    min-height: 46px;
+  }
+
+  .months-toggle {
+    margin-top: 12px;
+    padding: 12px 14px;
+    background: rgba(0, 0, 0, 0.25);
+    border-radius: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    font-size: 0.9em;
+    color: #b0b0d0;
+    user-select: none;
+  }
+
+  .months-toggle:active { background: rgba(255, 215, 0, 0.1); }
+
+  .months-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 8px;
+    margin-top: 12px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+  }
+
+  .months-grid.open { max-height: 4000px; }
+
+  .month-item {
+    padding: 12px 10px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    text-align: center;
+    user-select: none;
+    font-size: 0.82em;
+    position: relative;
+  }
+
+  .month-item.paid {
+    background: linear-gradient(135deg, rgba(0, 255, 136, 0.25), rgba(0, 204, 102, 0.15));
+    border-color: var(--green);
+  }
+  .month-item.paid .month-name { color: var(--green); text-decoration: line-through; }
+  .month-item.paid .month-amount { color: var(--green); }
+
+  .month-item.early {
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.35), rgba(255, 140, 0, 0.2));
+    border-color: var(--gold);
+    box-shadow: 0 0 12px rgba(255, 215, 0, 0.4);
+  }
+  .month-item.early .month-name { color: var(--gold); font-weight: 800; }
+  .month-item.early .month-amount { color: var(--gold); }
+
+  .month-name {
+    font-weight: 700;
+    color: var(--gold);
+    margin-bottom: 3px;
+    font-size: 0.95em;
+  }
+
+  .month-amount { color: #a0a0c0; font-size: 0.85em; }
+
+  .month-early-tag {
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, var(--gold), #ff8c00);
+    color: #1a1a2e;
+    font-size: 0.62em;
+    font-weight: 800;
+    padding: 2px 8px;
+    border-radius: 8px;
+    white-space: nowrap;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    box-shadow: 0 2px 8px rgba(255, 215, 0, 0.5);
+    z-index: 1;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 50px 20px;
+    color: #8080a0;
+    font-style: italic;
+    font-size: 1em;
+    line-height: 1.6;
+  }
+
+  .empty-state .big-emoji { font-size: 3.5em; display: block; margin-bottom: 16px; opacity: 0.7; }
+
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(5, 5, 15, 0.85);
+    backdrop-filter: blur(10px);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+  }
+
+  .modal-overlay.show { opacity: 1; pointer-events: auto; }
+
+  .modal {
+    background: linear-gradient(135deg, rgba(30, 20, 60, 0.98), rgba(60, 20, 80, 0.98));
+    border: 2px solid var(--pink);
+    border-radius: 24px;
+    padding: 26px 24px;
+    max-width: 520px;
+    width: 100%;
+    max-height: 88vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(255, 105, 180, 0.4);
+    transform: scale(0.85);
+    transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+  }
+
+  .modal-overlay.show .modal { transform: scale(1); }
+
+  .modal h2 { margin-bottom: 16px; font-size: 1.35em; }
+  .modal p { margin-bottom: 16px; text-align: center; }
+
+  .modal .btn-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+  }
+
+  .modal .btn-row .btn { flex: 1; min-width: 120px; }
+
+  .modal-emoji { font-size: 3.5em; text-align: center; display: block; margin-bottom: 12px; }
+
+  .scenario-card {
+    background: rgba(0, 0, 0, 0.3);
+    border: 2px solid var(--border);
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: all 0.25s;
+    position: relative;
+  }
+
+  .scenario-card:hover { border-color: var(--gold); }
+
+  .scenario-title {
+    font-size: 1.05em;
+    font-weight: 700;
+    color: var(--gold);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .scenario-info {
+    font-size: 0.88em;
+    color: #c0c0d8;
+    line-height: 1.7;
+    margin-bottom: 8px;
+  }
+
+  .scenario-info strong { color: #fff; }
+
+  .scenario-save {
+    display: inline-block;
+    background: rgba(0, 255, 136, 0.15);
+    color: var(--green);
+    padding: 4px 10px;
+    border-radius: 10px;
+    font-size: 0.82em;
+    font-weight: 700;
+    margin-top: 4px;
+  }
+
+  .prelim-note {
+    background: rgba(0, 255, 255, 0.08);
+    border-left: 3px solid var(--cyan);
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 0.85em;
+    color: #c0c0d8;
+    margin-bottom: 14px;
+    line-height: 1.6;
+  }
+
+  .prelim-note.warn {
+    background: rgba(255, 68, 102, 0.12);
+    border-left-color: var(--red);
+    color: #ffd0d8;
+  }
+
+  .prelim-note.gold {
+    background: rgba(255, 215, 0, 0.12);
+    border-left-color: var(--gold);
+    color: #ffe9a0;
+  }
+
+  .prelim-note.green {
+    background: rgba(0, 255, 136, 0.1);
+    border-left-color: var(--green);
+    color: #c0ffd8;
+  }
+
+  .upcoming-list {
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(255, 215, 0, 0.2);
+    border-radius: 14px;
+    padding: 12px 14px;
+    margin-top: 12px;
+  }
+
+  .upcoming-list-title {
+    font-size: 0.85em;
+    color: var(--gold);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .upcoming-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.08);
+    font-size: 0.88em;
+    gap: 8px;
+  }
+
+  .upcoming-item:last-child { border-bottom: none; }
+
+  .upcoming-item .up-name {
+    flex: 1;
+    color: #fff;
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .upcoming-item .up-date {
+    color: #a0a0c0;
+    font-size: 0.85em;
+    white-space: nowrap;
+  }
+
+  .upcoming-item .up-sum {
+    color: var(--gold);
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .upcoming-item.today .up-name { color: var(--gold); }
+  .upcoming-item.today .up-date { color: var(--gold); }
+
+  .mission-card {
+    background: var(--card-bg);
+    border: 2px solid var(--border);
+    border-radius: 20px;
+    padding: 24px 20px;
+    margin-bottom: 16px;
+    cursor: pointer;
+    transition: all 0.3s;
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .mission-card:active { transform: scale(0.98); }
+  .mission-card:hover { border-color: var(--gold); }
+
+  .mission-card.locked {
+    opacity: 0.55;
+    cursor: not-allowed;
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .mission-card.locked:hover { border-color: rgba(255, 255, 255, 0.1); }
+
+  .mission-card.completed {
+    border-color: var(--green);
+    background: rgba(0, 255, 136, 0.06);
+  }
+
+  .mission-card.completed:hover { border-color: var(--green); }
+
+  .mission-title {
+    font-size: 1.15em;
+    font-weight: 700;
+    color: var(--gold);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .mission-card.completed .mission-title { color: var(--green); }
+
+  .mission-desc { color: #a0a0c0; font-size: 0.9em; line-height: 1.5; }
+
+  .mission-progress-mini {
+    height: 6px;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-top: 14px;
+  }
+
+  .mission-progress-mini-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--pink), var(--gold));
+    border-radius: 3px;
+    transition: width 0.5s;
+  }
+
+  .mission-progress-mini-fill.done { background: linear-gradient(90deg, var(--green), #00cc66); }
+
+  .mission-saved {
+    margin-top: 10px;
+    font-size: 0.9em;
+    color: var(--gold);
+    font-weight: 700;
+  }
+
+  .completed-banner {
+    margin-top: 14px;
+    padding: 14px 16px;
+    background: linear-gradient(135deg, rgba(0, 255, 136, 0.2), rgba(255, 215, 0, 0.15));
+    border: 2px solid var(--green);
+    border-radius: 14px;
+    text-align: center;
+    animation: completed-glow 2.5s infinite;
+  }
+
+  @keyframes completed-glow {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(0, 255, 136, 0.3); }
+    50% { box-shadow: 0 0 25px 5px rgba(0, 255, 136, 0.5); }
+  }
+
+  .completed-banner .cb-title {
+    font-size: 1.05em;
+    font-weight: 800;
+    color: var(--green);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+
+  .completed-banner .cb-amount {
+    font-size: 1.5em;
+    font-weight: 800;
+    background: linear-gradient(90deg, var(--gold), #ff8c00);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+    line-height: 1.2;
+  }
+
+  .completed-banner .cb-label {
+    font-size: 0.82em;
+    color: #a0a0c0;
+    margin-top: 4px;
+  }
+
+  .weeks-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 12px;
+    margin: 20px 0;
+  }
+
+  .week-item {
+    background: rgba(0, 0, 0, 0.3);
+    border: 2px solid var(--border);
+    border-radius: 16px;
+    padding: 18px 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.25s;
+    user-select: none;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .week-item:active { transform: scale(0.95); }
+
+  .week-item.paid {
+    background: linear-gradient(135deg, rgba(0, 255, 136, 0.2), rgba(0, 204, 102, 0.1));
+    border-color: var(--green);
+  }
+
+  .week-item.paid.today-editable {
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+    border-color: var(--gold);
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(0, 255, 136, 0.15));
+  }
+
+  .week-item.current {
+    border-color: var(--gold);
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+    animation: week-pulse 2s infinite;
+  }
+
+  @keyframes week-pulse {
+    0%, 100% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.4); }
+    50% { box-shadow: 0 0 30px rgba(255, 215, 0, 0.7); }
+  }
+
+  .week-item.locked {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  .week-item.locked:active { transform: none; }
+
+  .week-item.missed {
+    background: linear-gradient(135deg, rgba(255, 68, 102, 0.3), rgba(204, 0, 51, 0.15));
+    border-color: var(--red);
+    cursor: pointer;
+    animation: missed-pulse 2s infinite;
+  }
+
+  @keyframes missed-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(255, 68, 102, 0.4); }
+    50% { box-shadow: 0 0 0 12px rgba(255, 68, 102, 0); }
+  }
+
+  .week-item.missed:active { transform: scale(0.95); }
+
+  .week-number { font-size: 1.5em; font-weight: 800; color: var(--gold); margin-bottom: 4px; }
+  .week-item.paid .week-number { color: var(--green); }
+  .week-item.missed .week-number { color: var(--red); }
+
+  .week-label {
+    font-size: 0.75em;
+    color: #a0a0c0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+  }
+
+  .week-check { font-size: 1.8em; margin-top: 6px; min-height: 30px; }
+
+  .week-saved {
+    font-size: 0.9em;
+    font-weight: 800;
+    color: var(--green);
+    margin-top: 4px;
+  }
+
+  .week-edit-hint {
+    font-size: 0.68em;
+    color: var(--gold);
+    margin-top: 3px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+
+  .week-hint {
+    font-size: 0.7em;
+    color: #a0a0c0;
+    margin-top: 4px;
+    line-height: 1.3;
+    min-height: 26px;
+  }
+
+  .week-item.missed .week-hint {
+    color: var(--red);
+    font-weight: 700;
+    font-size: 0.72em;
+  }
+
+  .progress-bar-big {
+    height: 16px;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 16px 0;
+    border: 2px solid var(--border);
+  }
+
+  .progress-bar-big-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--pink), var(--gold), var(--cyan));
+    border-radius: 6px;
+    transition: width 0.6s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .progress-bar-big-fill::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    animation: shine 2.5s infinite;
+  }
+
+  @keyframes shine {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+
+  .progress-stat {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9em;
+    color: var(--gold);
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .toast {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-200%);
+    background: linear-gradient(135deg, var(--pink), var(--purple));
+    color: #fff;
+    padding: 16px 24px;
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(255, 105, 180, 0.6);
+    font-weight: 700;
+    max-width: 90%;
+    text-align: center;
+    z-index: 2000;
+    transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    font-size: 0.95em;
+    line-height: 1.4;
+  }
+
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  .toast.reminder {
+    background: linear-gradient(135deg, var(--gold), #ff8c00);
+    color: #1a1a2e;
+    box-shadow: 0 10px 40px rgba(255, 215, 0, 0.6);
+  }
+
+  .toast.warn {
+    background: linear-gradient(135deg, var(--red), #cc0033);
+    box-shadow: 0 10px 40px rgba(255, 68, 102, 0.6);
+  }
+
+  .motivation-card {
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 105, 180, 0.1));
+    border: 2px solid var(--gold);
+    border-radius: 20px;
+    padding: 24px 20px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .motivation-card .mot-icon { font-size: 3em; margin-bottom: 12px; display: block; }
+  .motivation-card .mot-text {
+    font-size: 1.1em;
+    color: #fff;
+    font-weight: 600;
+    line-height: 1.5;
+    font-style: italic;
+  }
+
+  .motivation-card.warn {
+    background: linear-gradient(135deg, rgba(255, 68, 102, 0.2), rgba(204, 0, 51, 0.1));
+    border-color: var(--red);
+  }
+
+  .savings-display {
+    background: linear-gradient(135deg, rgba(0, 255, 136, 0.15), rgba(255, 215, 0, 0.12));
+    border: 2px solid var(--green);
+    border-radius: 20px;
+    padding: 20px 22px;
+    margin-bottom: 18px;
+    text-align: center;
+    box-shadow: 0 8px 30px rgba(0, 255, 136, 0.15);
+  }
+
+  .savings-display .sd-label {
+    font-size: 0.85em;
+    color: #a0a0c0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+
+  .savings-display .sd-amount {
+    font-size: 2.2em;
+    font-weight: 800;
+    background: linear-gradient(90deg, var(--green), var(--gold));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 30px rgba(0, 255, 136, 0.4);
+    line-height: 1.1;
+    word-break: break-word;
+  }
+
+  .savings-display .sd-sub {
+    font-size: 0.82em;
+    color: #a0a0c0;
+    margin-top: 6px;
+  }
+
+  .screen-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .screen-header h2 { margin-bottom: 0; text-align: left; flex: 1; }
+
+  .date-hint { font-size: 0.78em; color: #a0a0c0; margin-top: 6px; line-height: 1.4; }
+
+  @media (max-width: 480px) {
+    .screen { padding: 16px; }
+    .screen-content { padding-top: 65px; padding-bottom: 90px; }
+    .btn { padding: 14px 20px; font-size: 1em; }
+    .menu-card { padding: 20px 18px; }
+    .menu-icon { font-size: 2.2em; }
+    .week-item { padding: 14px 10px; }
+    .months-grid { grid-template-columns: repeat(2, 1fr); }
+    .back-btn { width: 46px; height: 46px; top: 14px; left: 14px; font-size: 1.4em; }
+    .credit-compact-amount .val { font-size: 0.95em; }
+    .savings-display .sd-amount { font-size: 1.7em; }
+  }
+
+  @media (min-width: 768px) {
+    .screen-content { padding-bottom: 40px; }
+  }
+
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(255, 105, 180, 0.4); border-radius: 3px; }
+
+  .hidden { display: none !important; }
+
+  .weekday-select {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+    margin-top: 8px;
+  }
+
+  .weekday-btn {
+    aspect-ratio: 1;
+    background: rgba(0, 0, 0, 0.3);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    color: #b0b0d0;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 0.85em;
+    transition: all 0.25s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+  }
+
+  .weekday-btn:active { transform: scale(0.9); }
+  .weekday-btn.selected {
+    background: linear-gradient(135deg, var(--pink), #ff1493);
+    border-color: var(--pink);
+    color: #fff;
+    box-shadow: 0 0 15px rgba(255, 105, 180, 0.5);
+  }
+
+  .info-box {
+    background: rgba(0, 255, 255, 0.08);
+    border-left: 4px solid var(--cyan);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin: 14px 0;
+    font-size: 0.88em;
+    color: #c0c0d8;
+    line-height: 1.5;
+  }
+
+  .storage-warning {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 68, 102, 0.95);
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 12px;
+    font-size: 0.85em;
+    z-index: 3000;
+    max-width: 90%;
+    text-align: center;
+    box-shadow: 0 5px 20px rgba(255, 68, 102, 0.5);
+    display: none;
+  }
+
+  .storage-warning.show { display: block; }
+
+  .section-title {
+    font-size: 1.05em;
+    color: var(--gold);
+    font-weight: 700;
+    margin: 20px 0 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+  }
+
+  .section-title .count {
+    background: rgba(255, 215, 0, 0.2);
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-size: 0.8em;
+  }
+
+  .archive-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 0.75em;
+    font-weight: 700;
+    margin-top: 6px;
+  }
+
+  .archive-badge.early { background: rgba(255, 215, 0, 0.25); color: var(--gold); }
+  .archive-badge.ontime { background: rgba(0, 255, 136, 0.25); color: var(--green); }
+
+  .reminder-banner {
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 140, 0, 0.15));
+    border: 2px solid var(--gold);
+    border-radius: 16px;
+    padding: 16px 18px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    animation: reminder-pulse 2s infinite;
+  }
+
+  @keyframes reminder-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.4); }
+    50% { box-shadow: 0 0 0 10px rgba(255, 215, 0, 0); }
+  }
+
+  .reminder-banner .r-icon { font-size: 2.2em; flex-shrink: 0; }
+  .reminder-banner .r-text { flex: 1; font-size: 0.92em; color: #fff; line-height: 1.4; }
+  .reminder-banner .r-text strong { color: var(--gold); }
+
+  .reminder-banner.missed {
+    background: linear-gradient(135deg, rgba(255, 68, 102, 0.25), rgba(204, 0, 51, 0.15));
+    border-color: var(--red);
+    animation: reminder-pulse-red 2s infinite;
+  }
+
+  @keyframes reminder-pulse-red {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(255, 68, 102, 0.4); }
+    50% { box-shadow: 0 0 0 10px rgba(255, 68, 102, 0); }
+  }
+
+  .reminder-banner.missed .r-text strong { color: var(--red); }
+
+  .lock-icon {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    font-size: 1.3em;
+    opacity: 0.7;
+  }
+
+  /* Баннер разрешения на уведомления */
+  .permission-banner {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(200%);
+    background: linear-gradient(135deg, rgba(255, 105, 180, 0.98), rgba(138, 43, 226, 0.98));
+    color: #fff;
+    padding: 18px 22px;
+    border-radius: 18px;
+    max-width: 92%;
+    width: 480px;
+    z-index: 10000;
+    box-shadow: 0 10px 40px rgba(255, 105, 180, 0.6);
+    transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    border: 2px solid rgba(255, 215, 0, 0.5);
+  }
+
+  .permission-banner.show {
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .permission-banner .pb-title {
+    font-size: 1.05em;
+    font-weight: 800;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .permission-banner .pb-text {
+    font-size: 0.88em;
+    line-height: 1.4;
+    margin-bottom: 14px;
+    opacity: 0.95;
+  }
+
+  .permission-banner .pb-buttons {
+    display: flex;
+    gap: 10px;
+  }
+
+  .permission-banner .pb-buttons button {
+    flex: 1;
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.9em;
+    min-height: 46px;
+    border: none;
+  }
+
+  .permission-banner .pb-yes {
+    background: linear-gradient(135deg, #00ff88, #00cc66);
+    color: #0a0a1a;
+  }
+
+  .permission-banner .pb-no {
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+  }
+
+  .permission-banner .pb-buttons button:active {
+    transform: scale(0.96);
+  }
+</style>
+</head>
+<body>
+
+<button class="back-btn" id="backBtn" data-action="back">←</button>
+<button class="role-btn" id="roleBtn" data-action="toggle-role" title="Сменить роль">
+  <span id="roleIcon">👤</span>
+  <span id="roleName">Пользователь</span>
+</button>
+
+<!-- ЭКРАН 1: ПРИВЕТСТВИЕ -->
+<div class="screen active" id="screen-welcome">
+  <div class="screen-content">
+    <div class="hero-emoji">💰</div>
+    <h1>Твой финансовый путь</h1>
+    <div class="welcome-text">
+      <p>Это приложение поможет тебе <strong style="color:var(--gold)">взять под контроль кредиты</strong> и <strong style="color:var(--green)">выработать привычку платить себе</strong>.</p>
+      <p>Всё в одном месте: платежи, даты, прогресс и мотивация.</p>
+      <p class="motivation">"Тот, кто управляет своими деньгами, управляет своей жизнью."</p>
+    </div>
+    <button class="btn gold" data-action="go-menu">Вперёд →</button>
+  </div>
+</div>
+
+<!-- ЭКРАН 2: ГЛАВНОЕ МЕНЮ -->
+<div class="screen" id="screen-menu">
+  <div class="screen-content">
+    <h1>Что делаем сегодня?</h1>
+    <p style="text-align:center;margin-bottom:24px;">Выбери раздел</p>
+
+    <div class="menu-card" data-action="navigate" data-screen="credits">
+      <div class="menu-icon">💳</div>
+      <div class="menu-text">
+        <div class="menu-title">Анкета кредитных обязательств</div>
+        <div class="menu-desc">Внеси свои кредиты (до 10), смотри сколько осталось платить и когда следующий платёж</div>
+      </div>
+    </div>
+
+    <div class="menu-card" data-action="navigate" data-screen="missions">
+      <div class="menu-icon">🌱</div>
+      <div class="menu-text">
+        <div class="menu-title">Формируем привычку платить себе</div>
+        <div class="menu-desc">Миссии от 1 до 5: от 4 недель до 20 недель. Откладывай каждую неделю и качай финансовую мышцу</div>
+      </div>
+    </div>
+
+    <div class="info-box" style="margin-top:24px;">
+      💡 Данные сохраняются в приложении автоматически. Приложение обновляется каждые сутки в 00:01.
+    </div>
+  </div>
+</div>
+
+<!-- ЭКРАН 3: КРЕДИТЫ -->
+<div class="screen" id="screen-credits">
+  <div class="screen-content">
+    <div class="screen-header">
+      <h2>💳 Мои кредиты</h2>
+      <button class="btn small gold" data-action="add-credit">+ Добавить</button>
+    </div>
+
+    <div id="creditsSummary"></div>
+    <div id="creditsList"></div>
+  </div>
+</div>
+
+<!-- ЭКРАН 4: МИССИИ -->
+<div class="screen" id="screen-missions">
+  <div class="screen-content">
+    <h2>🌱 Плати себе</h2>
+    <p style="text-align:center;margin-bottom:24px;">Проходи миссии последовательно и формируй привычку</p>
+
+    <div id="missionsList"></div>
+  </div>
+</div>
+
+<!-- ЭКРАН 5: КОНКРЕТНАЯ МИССИЯ -->
+<div class="screen" id="screen-mission">
+  <div class="screen-content">
+    <div id="missionContent"></div>
+  </div>
+</div>
+
+<!-- ЭКРАН 6: АРХИВ -->
+<div class="screen" id="screen-archive">
+  <div class="screen-content">
+    <h2>🏆 Архив достижений</h2>
+    <p style="text-align:center;margin-bottom:24px;color:#a0a0c0;">Здесь хранится история закрытых кредитов</p>
+
+    <div id="archiveList"></div>
+  </div>
+</div>
+
+<!-- МОДАЛЬНОЕ ОКНО -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" id="modalContent"></div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- Предупреждение о localStorage -->
+<div class="storage-warning" id="storageWarning">
+  ⚠️ Файл открыт локально. Данные не сохраняются между сессиями.<br>
+  Для сохранения открой через локальный сервер.
+</div>
+
+<!-- Баннер разрешения на уведомления -->
+<div class="permission-banner" id="permissionBanner">
+  <div class="pb-title">🔔 Включить уведомления?</div>
+  <div class="pb-text">
+    Мы будем напоминать тебе <strong>заплатить себе</strong> в твой день:
+    <br>в 10:00, 13:00 и 18:00 — но только если ты ещё не отметил неделю.
+  </div>
+  <div class="pb-buttons">
+    <button class="pb-no" data-action="skip-notifications">Позже</button>
+    <button class="pb-yes" data-action="enable-notifications">🔔 Включить</button>
+  </div>
+</div>
+
+<script>
+'use strict';
+
+// ============================================================
+// ПРОВЕРКА localStorage
+// ============================================================
+var storageAvailable = false;
+try {
+  var _test = '__test_' + Date.now();
+  localStorage.setItem(_test, _test);
+  localStorage.removeItem(_test);
+  storageAvailable = true;
+} catch (e) {
+  storageAvailable = false;
+  console.warn('localStorage недоступен:', e.message);
+  window.addEventListener('DOMContentLoaded', function() {
+    var w = document.getElementById('storageWarning');
+    if (w) {
+      w.classList.add('show');
+      setTimeout(function() { w.classList.remove('show'); }, 8000);
+    }
+  });
+}
+
+const STORAGE_KEY = 'finance_app_v10';
+
+// ============================================================
+// SERVICE WORKER И УВЕДОМЛЕНИЯ
+// ============================================================
+let swRegistration = null;
+let notificationsEnabled = false;
+let notificationCheckInterval = null;
+let lastNotificationShown = {};
+
+async function initServiceWorker() {
+  if (!('serviceWorker' in navigator)) {
+    console.warn('⚠️ Service Worker не поддерживается');
+    return null;
+  }
+
+  if (location.protocol === 'file:') {
+    console.warn('⚠️ Service Worker не работает через file://. Нужен http:// или https://');
+    return null;
+  }
+
+  try {
+    const reg = await navigator.serviceWorker.register('./service-worker.js');
+    console.log('✅ Service Worker зарегистрирован');
+    swRegistration = reg;
+
+    navigator.serviceWorker.addEventListener('message', function(event) {
+      if (event.data && event.data.type === 'CHECK_REMINDER') {
+        checkAndShowReminder(event.data.hour);
+      }
+    });
+
+    return reg;
+  } catch (err) {
+    console.error('❌ Ошибка Service Worker:', err);
+    return null;
+  }
+}
+
+function getNotificationPermission() {
+  if (!('Notification' in window)) return 'unsupported';
+  return Notification.permission;
+}
+
+async function requestNotificationPermission() {
+  if (!('Notification' in window)) {
+    showToast('⚠️ Уведомления не поддерживаются');
+    return false;
+  }
+
+  try {
+    const permission = await Notification.requestPermission();
+    if (permission === 'granted') {
+      notificationsEnabled = true;
+      localStorage.setItem('notifications_enabled', 'true');
+      showToast('🔔 Уведомления включены!');
+      startNotificationScheduler();
+      setTimeout(function() {
+        showLocalNotification(
+          '🔔 Уведомления работают!',
+          'Мы будем напоминать тебе в 10:00, 13:00 и 18:00 в твой день недели.'
+        );
+      }, 1000);
+      return true;
+    } else {
+      showToast('⚠️ Уведомления отклонены. Включи в настройках телефона.');
+      return false;
+    }
+  } catch (err) {
+    console.error('Ошибка запроса разрешения:', err);
+    return false;
+  }
+}
+
+function showLocalNotification(title, body, tag) {
+  if (Notification.permission !== 'granted') return;
+
+  const iconData = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxOTIgMTkyIj48cmVjdCB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgcng9IjQwIiBmaWxsPSIjMWEwYTJhIi8+PHRleHQgeD0iOTYiIHk9IjEzMCIgZm9udC1zaXplPSIxMjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiNmZmQ3MDAiPvCfjrA8L3RleHQ+PC9zdmc+';
+
+  if (swRegistration && swRegistration.showNotification) {
+    swRegistration.showNotification(title, {
+      body: body,
+      icon: iconData,
+      vibrate: [200, 100, 200],
+      tag: tag || 'reminder',
+      requireInteraction: true
+    }).catch(function(err) {
+      console.warn('SW notification fail, fallback to new Notification:', err);
+      try { new Notification(title, { body: body }); } catch (e) {}
+    });
+  } else {
+    try { new Notification(title, { body: body }); } catch (e) {}
+  }
+}
+
+function checkAndShowReminder(hour) {
+  if (Notification.permission !== 'granted') return;
+
+  const today = new Date();
+  const todayKey = today.getFullYear() + '-' +
+                   String(today.getMonth() + 1).padStart(2, '0') + '-' +
+                   String(today.getDate()).padStart(2, '0');
+  const hourKey = todayKey + '-' + hour;
+
+  if (lastNotificationShown[hourKey]) return;
+
+  const todayWeekday = getTodayWeekdayIndex();
+  let needReminder = false;
+  let missionName = '';
+
+  Object.keys(AppState.missions).forEach(function(id) {
+    const state = AppState.missions[id];
+    if (!state.active) return;
+    if (state.weekday !== todayWeekday) return;
+
+    let currentWeekIdx = -1;
+    for (let i = 0; i < state.weeks.length; i++) {
+      if (!state.weeks[i] && canMarkWeek(state, i)) {
+        currentWeekIdx = i;
+        break;
+      }
+    }
+
+    if (currentWeekIdx >= 0) {
+      needReminder = true;
+      missionName = MISSION_DEFS[id].title;
+    }
+  });
+
+  if (needReminder) {
+    let body = '';
+    if (hour === 10) {
+      body = '🌱 Доброе утро! Не забудь заплатить себе — миссия «' + missionName + '».';
+    } else if (hour === 13) {
+      body = '⏰ Напоминание: ты ещё не заплатил себе сегодня. Миссия «' + missionName + '».';
+    } else if (hour === 18) {
+      body = '🌙 День заканчивается, а взнос ещё не сделан. Не прерывай привычку — миссия «' + missionName + '»!';
+    }
+
+    showLocalNotification(
+      '💰 ' + (hour === 10 ? 'Пора платить себе' : hour === 13 ? 'Не забудь о себе' : 'Последнее напоминание'),
+      body,
+      'reminder-' + hourKey
+    );
+    lastNotificationShown[hourKey] = true;
+    try { localStorage.setItem('notification_log', JSON.stringify(lastNotificationShown)); } catch (e) {}
+  }
+}
+
+function startNotificationScheduler() {
+  if (notificationCheckInterval) clearInterval(notificationCheckInterval);
+
+  notificationCheckInterval = setInterval(function() {
+    const now = new Date();
+    const hours = now.getHours();
+    const minutes = now.getMinutes();
+
+    if (minutes !== 0) return;
+    if (hours !== 10 && hours !== 13 && hours !== 18) return;
+
+    checkAndShowReminder(hours);
+  }, 60 * 1000);
+
+  const now = new Date();
+  if (now.getMinutes() === 0 && (now.getHours() === 10 || now.getHours() === 13 || now.getHours() === 18)) {
+    checkAndShowReminder(now.getHours());
+  }
+
+  console.log('⏰ Планировщик уведомлений запущен');
+}
+
+function showPermissionBanner() {
+  const banner = document.getElementById('permissionBanner');
+  if (!banner) return;
+
+  if (Notification.permission === 'granted') {
+    notificationsEnabled = true;
+    startNotificationScheduler();
+    return;
+  }
+
+  if (Notification.permission === 'denied') return;
+
+  setTimeout(function() {
+    banner.classList.add('show');
+  }, 3000);
+}
+
+function hidePermissionBanner() {
+  const banner = document.getElementById('permissionBanner');
+  if (banner) banner.classList.remove('show');
+}
+
+async function initNotifications() {
+  await initServiceWorker();
+
+  try {
+    const log = localStorage.getItem('notification_log');
+    if (log) lastNotificationShown = JSON.parse(log);
+  } catch (e) {}
+
+  if (getNotificationPermission() === 'granted') {
+    notificationsEnabled = true;
+    startNotificationScheduler();
+  } else {
+    showPermissionBanner();
+  }
+}
+
+// ============================================================
+// СОСТОЯНИЕ
+// ============================================================
+function emptyMission(weeksCount) {
+  return {
+    active: false,
+    weekday: null,
+    weeks: Array(weeksCount).fill(false),
+    weekAmounts: Array(weeksCount).fill(0),
+    weekPaidDates: Array(weeksCount).fill(null),
+    startedAt: null,
+    lastReminderDate: null,
+    completed: false,
+    completedAt: null
+  };
+}
+
+let AppState = {
+  credits: [],
+  archive: [],
+  role: 'user',
+  missions: {
+    m1: emptyMission(4),
+    m2: emptyMission(8),
+    m3: emptyMission(12),
+    m4: emptyMission(16),
+    m5: emptyMission(20)
+  },
+  currentScreen: 'welcome',
+  screenHistory: [],
+  lastAutoUpdate: null,
+  expandedCredits: {}
+};
+
+// ============================================================
+// СОХРАНЕНИЕ / ЗАГРУЗКА
+// ============================================================
+function save() {
+  if (!storageAvailable) return;
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(AppState));
+  } catch (e) {
+    console.error('Save error', e);
+  }
+}
+
+function load() {
+  if (!storageAvailable) return;
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      AppState = Object.assign(AppState, parsed);
+      const defs = { m1: 4, m2: 8, m3: 12, m4: 16, m5: 20 };
+      if (!AppState.missions) AppState.missions = {};
+      Object.keys(defs).forEach(function(id) {
+        const count = defs[id];
+        if (!AppState.missions[id]) {
+          AppState.missions[id] = emptyMission(count);
+        } else {
+          const m = AppState.missions[id];
+          if (!Array.isArray(m.weeks) || m.weeks.length !== count) m.weeks = Array(count).fill(false);
+          if (!Array.isArray(m.weekAmounts) || m.weekAmounts.length !== count) m.weekAmounts = Array(count).fill(0);
+          if (!Array.isArray(m.weekPaidDates) || m.weekPaidDates.length !== count) m.weekPaidDates = Array(count).fill(null);
+          if (m.completed === undefined) m.completed = false;
+          if (m.completedAt === undefined) m.completedAt = null;
+        }
+      });
+      if (AppState.role !== 'admin') AppState.role = 'user';
+      if (!Array.isArray(AppState.credits)) AppState.credits = [];
+      if (!Array.isArray(AppState.archive)) AppState.archive = [];
+      if (!Array.isArray(AppState.screenHistory)) AppState.screenHistory = [];
+      if (!AppState.expandedCredits || typeof AppState.expandedCredits !== 'object') AppState.expandedCredits = {};
+    }
+  } catch (e) {
+    console.error('Load error', e);
+  }
+}
+
+// ============================================================
+// РОЛЬ
+// ============================================================
+function isAdmin() { return AppState.role === 'admin'; }
+
+function updateRoleBtn() {
+  const btn = document.getElementById('roleBtn');
+  const icon = document.getElementById('roleIcon');
+  const name = document.getElementById('roleName');
+  if (!btn) return;
+  if (isAdmin()) {
+    btn.classList.add('admin');
+    if (icon) icon.textContent = '👑';
+    if (name) name.textContent = 'Администратор';
+  } else {
+    btn.classList.remove('admin');
+    if (icon) icon.textContent = '👤';
+    if (name) name.textContent = 'Пользователь';
+  }
+}
+
+function toggleRole() {
+  const newRole = isAdmin() ? 'user' : 'admin';
+  const modal = document.getElementById('modalContent');
+  modal.innerHTML =
+    '<span class="modal-emoji">' + (newRole === 'admin' ? '👑' : '👤') + '</span>' +
+    '<h2>Сменить роль?</h2>' +
+    '<p>Текущая роль: <strong>' + (isAdmin() ? '👑 Администратор' : '👤 Пользователь') + '</strong></p>' +
+    '<p>Новая роль: <strong>' + (newRole === 'admin' ? '👑 Администратор' : '👤 Пользователь') + '</strong></p>' +
+    '<div class="prelim-note" style="margin-top:12px;">' +
+      (newRole === 'admin'
+        ? '👑 <strong>Режим администратора:</strong> все миссии разблокированы, без ограничений по дням недели и последовательности. Для тестирования.'
+        : '👤 <strong>Режим пользователя:</strong> миссии открываются последовательно, недели — в выбранный день недели, досрочка — 1 раз в месяц.') +
+    '</div>' +
+    '<div class="btn-row">' +
+      '<button class="btn ghost" id="modalCancelBtn">Отмена</button>' +
+      '<button class="btn gold" id="modalConfirmRoleBtn">' + (newRole === 'admin' ? 'Стать админом' : 'Стать пользователем') + '</button>' +
+    '</div>';
+  openModal();
+  document.getElementById('modalCancelBtn').onclick = closeModal;
+  document.getElementById('modalConfirmRoleBtn').onclick = function() {
+    AppState.role = newRole;
+    save();
+    updateRoleBtn();
+    closeModal();
+    showToast(newRole === 'admin' ? '👑 Роль: Администратор' : '👤 Роль: Пользователь');
+    if (AppState.currentScreen === 'missions') renderMissions();
+    if (AppState.currentScreen === 'mission') renderMission();
+  };
+}
+
+// ============================================================
+// НАВИГАЦИЯ
+// ============================================================
+function navigate(screen) {
+  try {
+    if (AppState.currentScreen === screen) return;
+
+    AppState.screenHistory.push(AppState.currentScreen);
+    AppState.currentScreen = screen;
+
+    document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
+    const el = document.getElementById('screen-' + screen);
+    if (el) {
+      el.classList.add('active');
+      el.scrollTop = 0;
+    }
+
+    updateBackBtn();
+
+    if (screen === 'credits') renderCredits();
+    if (screen === 'missions') renderMissions();
+    if (screen === 'mission') renderMission();
+    if (screen === 'archive') renderArchive();
+
+    save();
+  } catch (e) {
+    console.error('Navigate error:', e);
+  }
+}
+
+function goBack() {
+  if (AppState.screenHistory.length === 0) {
+    navigate('menu');
+    return;
+  }
+  const prev = AppState.screenHistory.pop();
+  AppState.currentScreen = prev;
+
+  document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
+  const el = document.getElementById('screen-' + prev);
+  if (el) {
+    el.classList.add('active');
+    el.scrollTop = 0;
+  }
+
+  if (prev === 'credits') renderCredits();
+  if (prev === 'missions') renderMissions();
+  if (prev === 'mission') renderMission();
+  if (prev === 'archive') renderArchive();
+
+  updateBackBtn();
+  save();
+}
+
+function updateBackBtn() {
+  const btn = document.getElementById('backBtn');
+  if (!btn) return;
+  const s = AppState.currentScreen;
+  if (s === 'welcome' || s === 'menu') {
+    btn.classList.remove('visible');
+  } else {
+    btn.classList.add('visible');
+  }
+}
+
+// ============================================================
+// РАСЧЁТ КРЕДИТА
+// ============================================================
+function calcCreditData(payment, lastPaymentDateStr, rate, overrides) {
+  overrides = overrides || {};
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const last = new Date(lastPaymentDateStr);
+  last.setHours(0, 0, 0, 0);
+
+  const monthlyRate = (rate || 0) / 100 / 12;
+  let monthsCount = overrides.monthsCount || Math.max(1, monthsBetween(today, last));
+  let paymentFinal = overrides.payment || payment;
+
+  let initialDebt;
+  if (overrides.amount !== undefined) {
+    initialDebt = overrides.amount;
+  } else if (monthlyRate > 0) {
+    initialDebt = paymentFinal * (1 - Math.pow(1 + monthlyRate, -monthsCount)) / monthlyRate;
+  } else {
+    initialDebt = paymentFinal * monthsCount;
+  }
+
+  const months = [];
+  let cur = new Date(today.getFullYear(), today.getMonth(), 1);
+  let remainingDebt = initialDebt;
+  let i = 0;
+
+  while (remainingDebt > 0.01 && i < 600) {
+    const interest = remainingDebt * monthlyRate;
+    let principal = paymentFinal - interest;
+    if (principal <= 0) principal = remainingDebt;
+    const isLast = (remainingDebt - principal) <= 0.01;
+    if (isLast) principal = remainingDebt;
+
+    months.push({
+      year: cur.getFullYear(),
+      month: cur.getMonth(),
+      label: cur.toLocaleDateString('ru-RU', { month: 'long', year: 'numeric' }),
+      shortLabel: cur.toLocaleDateString('ru-RU', { month: 'short', year: '2-digit' }),
+      paymentDate: new Date(cur.getFullYear(), cur.getMonth(), last.getDate()),
+      payment: isLast ? (principal + interest) : paymentFinal,
+      principal: principal,
+      interest: interest,
+      remaining: Math.max(0, remainingDebt - principal)
+    });
+
+    remainingDebt -= principal;
+    cur.setMonth(cur.getMonth() + 1);
+    i++;
+    if (isLast) break;
+  }
+
+  const total = months.reduce(function(s, m) { return s + m.payment; }, 0);
+  const totalInterest = months.reduce(function(s, m) { return s + m.interest; }, 0);
+
+  return {
+    months: months,
+    total: total,
+    monthsCount: months.length,
+    initialDebt: initialDebt,
+    totalInterest: totalInterest,
+    payment: paymentFinal
+  };
+}
+
+function monthsBetween(d1, d2) {
+  let months = (d2.getFullYear() - d1.getFullYear()) * 12
+             + (d2.getMonth() - d1.getMonth());
+  if (d2.getDate() >= d1.getDate()) months += 1;
+  return Math.max(1, months);
+}
+
+function firstUnpaidIndex(credit) {
+  for (let i = 0; i < credit.monthStatus.length; i++) {
+    if (credit.monthStatus[i] === 'unpaid') return i;
+  }
+  return -1;
+}
+
+function currentMonthKey() {
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+}
+
+function hasEarlyRepaymentThisMonth(c) {
+  const mk = currentMonthKey();
+  if (!Array.isArray(c.earlyRepayments)) return false;
+  return c.earlyRepayments.some(function(e) {
+    if (!e.date) return false;
+    const d = new Date(e.date);
+    const ek = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+    return ek === mk;
+  });
+}
+
+// ============================================================
+// КРЕДИТЫ — UI
+// ============================================================
+function openAddCredit() {
+  if (AppState.credits.length >= 10) {
+    showToast('⚠️ Максимум 10 активных кредитов');
+    return;
+  }
+
+  const modal = document.getElementById('modalContent');
+  const nextYear = new Date();
+  nextYear.setFullYear(nextYear.getFullYear() + 1);
+
+  modal.innerHTML =
+    '<span class="modal-emoji">💳</span>' +
+    '<h2>Новый кредит</h2>' +
+    '<div class="form-group">' +
+      '<label>Название кредита</label>' +
+      '<input type="text" id="inpName" placeholder="Например: Кредитная карта" maxlength="40">' +
+    '</div>' +
+    '<div class="form-group">' +
+      '<label>Ежемесячный платёж, ₽</label>' +
+      '<input type="number" id="inpPayment" placeholder="5000" min="1" step="100" inputmode="numeric">' +
+    '</div>' +
+    '<div class="form-group">' +
+      '<label>Процентная ставка, % годовых</label>' +
+      '<input type="number" id="inpRate" placeholder="Например: 15.5" min="0" step="0.1" inputmode="decimal" value="0">' +
+      '<div class="date-hint">Если кредит беспроцентный — оставь 0</div>' +
+    '</div>' +
+    '<div class="form-group">' +
+      '<label>Дата последнего платежа</label>' +
+      '<input type="date" id="inpDate" value="' + nextYear.toISOString().slice(0, 10) + '">' +
+      '<div class="date-hint">Сумма долга и график платежей рассчитаются автоматически</div>' +
+    '</div>' +
+    '<div class="btn-row">' +
+      '<button class="btn ghost" id="modalCancelBtn">Отмена</button>' +
+      '<button class="btn gold" id="modalAddBtn">Добавить</button>' +
+    '</div>';
+
+  openModal();
+
+  document.getElementById('modalCancelBtn').onclick = closeModal;
+  document.getElementById('modalAddBtn').onclick = addCredit;
+
+  setTimeout(function() {
+    const inp = document.getElementById('inpName');
+    if (inp) inp.focus();
+  }, 300);
+}
+
+function addCredit() {
+  try {
+    const name = document.getElementById('inpName').value.trim();
+    const payment = parseFloat(document.getElementById('inpPayment').value);
+    const rate = parseFloat(document.getElementById('inpRate').value) || 0;
+    const date = document.getElementById('inpDate').value;
+
+    if (!name || !payment || payment <= 0 || !date) {
+      showToast('⚠️ Заполни все поля');
+      return;
+    }
+
+    const data = calcCreditData(payment, date, rate);
+
+    const credit = {
+      id: Date.now(),
+      name: name,
+      payment: payment,
+      rate: rate,
+      lastPaymentDate: date,
+      amount: data.total,
+      initialDebt: data.initialDebt,
+      totalInterest: data.totalInterest,
+      monthsCount: data.monthsCount,
+      monthStatus: Array(data.monthsCount).fill('unpaid'),
+      closed: false,
+      closedAt: null,
+      createdAt: new Date().toISOString(),
+      earlyRepayments: []
+    };
+
+    AppState.credits.push(credit);
+    AppState.expandedCredits[credit.id] = false;
+    save();
+    closeModal();
+    renderCredits();
+    showToast('✅ Кредит добавлен');
+  } catch (err) {
+    console.error('addCredit error:', err);
+    showToast('⚠️ Ошибка: ' + err.message);
+  }
+}
+
+function normalizeCredit(c) {
+  if (!c.monthStatus) {
+    c.monthStatus = (c.paidMonths || []).map(function(p) { return p ? 'paid' : 'unpaid'; });
+    while (c.monthStatus.length < c.monthsCount) c.monthStatus.push('unpaid');
+    delete c.paidMonths;
+  }
+  if (c.rate === undefined) c.rate = 0;
+  if (!Array.isArray(c.earlyRepayments)) c.earlyRepayments = [];
+  return c;
+}
+
+function renderCredits() {
+  try {
+    const list = document.getElementById('creditsList');
+    const summary = document.getElementById('creditsSummary');
+    if (!list || !summary) return;
+
+    AppState.credits.forEach(normalizeCredit);
+
+    const activeCredits = AppState.credits.filter(function(c) { return !c.closed; });
+    const closedCredits = AppState.credits.filter(function(c) { return c.closed; });
+
+    if (activeCredits.length === 0 && closedCredits.length === 0 && AppState.archive.length === 0) {
+      summary.innerHTML = '';
+      list.innerHTML =
+        '<div class="empty-state">' +
+          '<span class="big-emoji">📭</span>' +
+          'Пока нет кредитов.<br>Нажми «+ Добавить», чтобы начать контролировать свои обязательства.' +
+        '</div>';
+      return;
+    }
+
+    autoUpdateCredits();
+
+    const sorted = activeCredits.slice().sort(function(a, b) {
+      return new Date(a.lastPaymentDate) - new Date(b.lastPaymentDate);
+    });
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    let totalRemaining = 0;
+    let dueTodayCount = 0;
+    const upcomingItems = [];
+
+    sorted.forEach(function(c) {
+      const data = calcCreditData(c.payment, c.lastPaymentDate, c.rate);
+      const firstUnpaid = firstUnpaidIndex(c);
+      let remaining = 0;
+      data.months.forEach(function(m, i) {
+        if (c.monthStatus[i] === 'unpaid') remaining += m.payment;
+      });
+      totalRemaining += remaining;
+
+      if (firstUnpaid >= 0) {
+        const pDate = new Date(data.months[firstUnpaid].paymentDate);
+        pDate.setHours(0, 0, 0, 0);
+        const diff = Math.round((pDate - today) / 86400000);
+        if (diff === 0) dueTodayCount++;
+
+        upcomingItems.push({
+          credit: c,
+          date: pDate,
+          diffDays: diff,
+          sum: data.months[firstUnpaid].payment
+        });
+      }
+    });
+
+    upcomingItems.sort(function(a, b) { return a.date - b.date; });
+
+    let summaryHtml = '';
+
+    if (activeCredits.length > 0) {
+      summaryHtml += '<div class="info-box" style="margin-bottom:20px;">';
+      summaryHtml += '<div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;">';
+      summaryHtml += '<span>💰 Осталось выплатить: <strong style="color:var(--gold);">' + formatMoney(totalRemaining) + '</strong></span>';
+      summaryHtml += '<span>💳 Активных: <strong>' + activeCredits.length + '</strong></span>';
+      summaryHtml += '</div>';
+
+      if (dueTodayCount > 0) {
+        summaryHtml += '<div style="margin-top:8px;color:var(--gold);">⏰ Сегодня платёж: <strong>' + dueTodayCount + '</strong></div>';
+      }
+
+      if (upcomingItems.length > 0) {
+        summaryHtml += '<div class="upcoming-list">';
+        summaryHtml += '<div class="upcoming-list-title">📅 Ближайшие платежи</div>';
+
+        upcomingItems.forEach(function(item) {
+          const c = item.credit;
+          const days = item.diffDays;
+
+          let cls = 'upcoming-item';
+          if (days === 0) cls += ' today';
+
+          let dateLabel;
+          if (days === 0) dateLabel = 'Сегодня';
+          else dateLabel = 'Через ' + days + ' ' + daysWord(days);
+
+          summaryHtml += '<div class="' + cls + '">';
+          summaryHtml += '<span class="up-name">' + escapeHtml(c.name) + '</span>';
+          summaryHtml += '<span class="up-date">' + formatDateShort(item.date) + ' • ' + dateLabel + '</span>';
+          summaryHtml += '<span class="up-sum">' + formatMoney(item.sum) + '</span>';
+          summaryHtml += '</div>';
+        });
+
+        summaryHtml += '</div>';
+      }
+
+      summaryHtml += '</div>';
+    }
+
+    if (AppState.archive.length > 0 || closedCredits.length > 0) {
+      summaryHtml += '<div style="display:flex;justify-content:flex-end;margin-bottom:16px;">';
+      summaryHtml += '<button class="btn purple small" data-action="open-archive">🏆 Архив достижений (' + AppState.archive.length + ')</button>';
+      summaryHtml += '</div>';
+    }
+
+    summary.innerHTML = summaryHtml;
+
+    let listHtml = sorted.map(renderCreditCard).join('');
+
+    if (closedCredits.length > 0) {
+      listHtml += '<div class="section-title">✅ Закрытые кредиты <span class="count">' + closedCredits.length + '</span></div>';
+      listHtml += closedCredits.map(renderCreditCard).join('');
+    }
+
+    list.innerHTML = listHtml;
+  } catch (err) {
+    console.error('renderCredits error:', err);
+  }
+}
+
+function renderCreditCard(c) {
+  const data = calcCreditData(c.payment, c.lastPaymentDate, c.rate);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  let statusText = 'Активен';
+  let statusClass = 'badge-active';
+
+  if (c.closed) {
+    statusText = '✅ Закрыт';
+    statusClass = 'badge-paid';
+  } else {
+    const firstUnpaid = firstUnpaidIndex(c);
+    if (firstUnpaid >= 0) {
+      const pDate = new Date(data.months[firstUnpaid].paymentDate);
+      pDate.setHours(0, 0, 0, 0);
+      const diffDays = Math.round((pDate - today) / 86400000);
+      if (diffDays === 0) {
+        statusText = '⏰ Сегодня';
+        statusClass = 'badge-today';
+      } else if (diffDays > 0 && diffDays <= 3) {
+        statusText = '⏳ ' + diffDays + ' ' + daysWord(diffDays);
+        statusClass = 'badge-soon';
+      }
+    }
+  }
+
+  const paidCount = c.monthStatus.filter(function(s) { return s === 'paid'; }).length;
+  const earlyCount = c.monthStatus.filter(function(s) { return s === 'early'; }).length;
+  const totalCount = c.monthStatus.length;
+  const progress = totalCount === 0 ? 0 : Math.round(((paidCount + earlyCount) / totalCount) * 100);
+
+  const firstUnpaid = firstUnpaidIndex(c);
+  let nextDate = null;
+  if (firstUnpaid >= 0) {
+    nextDate = data.months[firstUnpaid].paymentDate;
+  }
+
+  const isExpanded = !!AppState.expandedCredits[c.id];
+  const monthsExpanded = !!c.monthsExpanded;
+
+  const monthsHtml = data.months.map(function(m, i) {
+    const status = c.monthStatus[i] || 'unpaid';
+
+    let cls = 'month-item';
+    if (status === 'paid') cls += ' paid';
+    else if (status === 'early') cls += ' early';
+
+    return '<div class="' + cls + '">' +
+      (status === 'early' ? '<div class="month-early-tag">⚡ Досрочно</div>' : '') +
+      '<div class="month-name">' + m.shortLabel + '</div>' +
+      '<div class="month-amount">' + formatMoney(m.payment) + '</div>' +
+    '</div>';
+  }).join('');
+
+  let nextDateShort = '';
+  if (nextDate && !c.closed) {
+    nextDateShort = formatDateShort(nextDate);
+  } else if (c.closed) {
+    nextDateShort = 'Закрыт';
+  }
+
+  const earlyThisMonth = hasEarlyRepaymentThisMonth(c);
+  const hasDecrease = Array.isArray(c.earlyRepayments) && c.earlyRepayments.some(function(e) { return e.scenario === 2; });
+
+  let html = '<div class="credit-card ' + (c.closed ? 'paid-off' : '') + '">';
+
+  html += '<div class="credit-compact" data-action="toggle-credit" data-credit-id="' + c.id + '">';
+  html += '<div class="credit-compact-info">';
+  html += '<div class="credit-compact-name">' + escapeHtml(c.name) + '<span class="credit-status-badge ' + statusClass + '">' + statusText + '</span></div>';
+  html += '<div class="credit-compact-meta">';
+  if (nextDateShort) {
+    html += '<span>📅 <strong>' + nextDateShort + '</strong></span>';
+  }
+  html += '<span>✅ <strong>' + paidCount + '/' + totalCount + '</strong> платежей</span>';
+  if (earlyCount > 0) {
+    html += '<span style="color:var(--gold);">⚡ <strong>' + earlyCount + '</strong> досрочно</span>';
+  }
+  html += '</div>';
+  html += '</div>';
+  html += '<div class="credit-compact-amount">';
+  html += '<span class="val">' + formatMoney(c.payment) + '</span>';
+  html += '<span class="lbl">в месяц</span>';
+  html += '</div>';
+  html += '<div class="credit-arrow ' + (isExpanded ? 'open' : '') + '">▼</div>';
+  html += '</div>';
+
+  html += '<div class="credit-details ' + (isExpanded ? 'open' : '') + '">';
+  html += '<div class="credit-details-inner">';
+
+  html += '<div class="credit-info-row"><span class="label">Изначальный долг (тело)</span><span class="value">' + formatMoney(data.initialDebt) + '</span></div>';
+  html += '<div class="credit-info-row"><span class="label">Общая сумма выплат</span><span class="value">' + formatMoney(data.total) + '</span></div>';
+  html += '<div class="credit-info-row"><span class="label">Проценты за весь срок</span><span class="value">' + formatMoney(data.totalInterest) + '</span></div>';
+  if (c.rate > 0) {
+    html += '<div class="credit-info-row"><span class="label">Ставка</span><span class="value">' + c.rate + '% годовых</span></div>';
+  }
+
+  if (hasDecrease && c.originalPayment && c.originalPayment > c.payment) {
+    html += '<div class="credit-info-row decreased"><span class="label">Платёж/мес</span>' +
+      '<span class="value">' +
+        '<span class="old-payment">' + formatMoney(c.originalPayment) + '</span> ' +
+        '<span class="new-payment">' + formatMoney(c.payment) + '</span> ' +
+        '<span class="decrease-tag">↓ стало меньше</span>' +
+      '</span></div>';
+  } else {
+    html += '<div class="credit-info-row"><span class="label">Платёж/мес</span><span class="value">' + formatMoney(c.payment) + '</span></div>';
+  }
+
+  html += '<div class="credit-info-row"><span class="label">Последний платёж</span><span class="value">' + formatDateRu(new Date(c.lastPaymentDate)) + '</span></div>';
+
+  if (nextDate && !c.closed) {
+    html += '<div class="credit-info-row"><span class="label">Следующий платёж</span><span class="value">' + formatDateRu(nextDate) + '</span></div>';
+  }
+
+  if (c.earlyRepayments.length > 0) {
+    let totalEarly = c.earlyRepayments.reduce(function(s, e) { return s + e.amount; }, 0);
+    html += '<div class="credit-info-row"><span class="label">⚡ Досрочно внесено</span><span class="value">' + formatMoney(totalEarly) + '</span></div>';
+  }
+
+  html += '<div class="credit-progress"><div class="credit-progress-fill ' + (c.closed ? 'full' : '') + '" style="width:' + progress + '%"></div></div>';
+  html += '<div class="credit-progress-text">' + (paidCount + earlyCount) + ' / ' + totalCount + ' платежей (' + progress + '%)</div>';
+
+  html += '<div class="months-toggle" data-action="toggle-months" data-credit-id="' + c.id + '">';
+  html += '<span>📅 ' + (monthsExpanded ? 'Скрыть' : 'Показать') + ' все платежи (' + totalCount + ')</span>';
+  html += '<span>' + (monthsExpanded ? '▲' : '▼') + '</span>';
+  html += '</div>';
+  html += '<div class="months-grid ' + (monthsExpanded ? 'open' : '') + '">' + monthsHtml + '</div>';
+
+  html += '<div class="credit-actions">';
+  if (!c.closed) {
+    if (earlyThisMonth && !isAdmin()) {
+      html += '<button class="btn ghost small" data-action="partial-repay-warn" data-credit-id="' + c.id + '">⚡ Досрочка (в этом мес. уже была)</button>';
+    } else {
+      html += '<button class="btn orange small" data-action="partial-repay" data-credit-id="' + c.id + '">⚡ Досрочное погашение</button>';
+    }
+    html += '<button class="btn green small" data-action="close-credit" data-credit-id="' + c.id + '">✅ Закрыть весь</button>';
+    html += '<button class="btn red small" data-action="delete-credit" data-credit-id="' + c.id + '">🗑 Удалить</button>';
+  } else {
+    html += '<button class="btn purple small" data-action="archive-credit" data-credit-id="' + c.id + '">🏆 В архив</button>';
+    html += '<button class="btn red small" data-action="delete-credit" data-credit-id="' + c.id + '">🗑 Удалить</button>';
+  }
+  html += '</div>';
+
+  html += '</div>';
+  html += '</div>';
+
+  html += '</div>';
+  return html;
+}
+
+function toggleCreditCard(id) {
+  AppState.expandedCredits[id] = !AppState.expandedCredits[id];
+  save();
+  renderCredits();
+}
+
+function toggleMonths(id) {
+  const c = AppState.credits.find(function(x) { return x.id === id; });
+  if (!c) return;
+  c.monthsExpanded = !c.monthsExpanded;
+  save();
+  renderCredits();
+}
+
+// ============================================================
+// ПРЕДУПРЕЖДЕНИЕ: ДОСРОЧКА УЖЕ БЫЛА
+// ============================================================
+function showPartialRepayWarning(id) {
+  const c = AppState.credits.find(function(x) { return x.id === id; });
+  if (!c || c.closed) return;
+
+  const modal = document.getElementById('modalContent');
+  modal.innerHTML =
+    '<span class="modal-emoji">⏳</span>' +
+    '<h2>Досрочка уже была</h2>' +
+    '<div class="prelim-note warn">' +
+      '⚠️ В <strong>текущем месяце</strong> по этому кредиту уже было частичное досрочное погашение.<br><br>' +
+      'Следующее досрочное погашение можно сделать <strong>в следующем месяце</strong>.' +
+    '</div>' +
+    '<p style="font-size:0.9em;color:#a0a0c0;">Это ограничение помогает соблюдать правила большинства банков: обычно досрочка разрешена один раз в месяц (в дату планового платежа).</p>' +
+    '<div class="btn-row">' +
+      '<button class="btn gold" id="modalOkBtn">Понятно</button>' +
+    '</div>';
+  openModal();
+  document.getElementById('modalOkBtn').onclick = closeModal;
+}
+
+// ============================================================
+// ЧАСТИЧНОЕ ДОСРОЧНОЕ ПОГАШЕНИЕ
+// ============================================================
+function openPartialRepay(id) {
+  const c = AppState.credits.find(function(x) { return x.id === id; });
+  if (!c || c.closed) return;
+
+  if (hasEarlyRepaymentThisMonth(c) && !isAdmin()) {
+    showPartialRepayWarning(id);
+    return;
+  }
+
+  const modal = document.getElementById('modalContent');
+  modal.innerHTML =
+    '<span class="modal-emoji">⚡</span>' +
+    '<h2>Досрочное погашение</h2>' +
+    '<div class="prelim-note">' +
+      '💡 <strong>Внимание:</strong> внесите сумму досрочного погашения <strong>без учёта ежемесячного платежа</strong>. ' +
+      'Ежемесячный платёж вы платите отдельно по графику.<br><br>' +
+      '📅 Досрочка возможна <strong>1 раз в месяц</strong>.' +
+    '</div>' +
+    '<div class="form-group">' +
+      '<label>Сумма досрочного погашения (сверх ежемесячного платежа), ₽</label>' +
+      '<input type="number" id="inpPartialAmount" placeholder="Например: 30000" min="1000" step="1000" inputmode="numeric">' +
+    '</div>' +
+    '<div class="btn-row">' +
+      '<button class="btn ghost" id="modalCancelBtn">Отмена</button>' +
+      '<button class="btn gold" id="modalCalcBtn">Рассчитать варианты →</button>' +
+    '</div>';
+
+  openModal();
+  document.getElementById('modalCancelBtn').onclick = closeModal;
+  document.getElementById('modalCalcBtn').onclick = function() {
+    const amount = parseFloat(document.getElementById('inpPartialAmount').value);
+    if (!amount || amount < 1000) {
+      showToast('⚠️ Минимальная сумма — 1000 ₽');
+      return;
+    }
+    showPartialScenarios(id, amount);
+  };
+}
+
+function showPartialScenarios(id, amount) {
+  const c = AppState.credits.find(function(x) { return x.id === id; });
+  if (!c || c.closed) return;
+
+  const data = calcCreditData(c.payment, c.lastPaymentDate, c.rate);
+  const firstUnpaid = firstUnpaidIndex(c);
+  if (firstUnpaid < 0) {
+    showToast('⚠️ Нет активных платежей');
+    return;
+  }
+
+  const currentMonth = data.months[firstUnpaid];
+  const remainingDebt = currentMonth.principal + currentMonth.remaining;
+
+  if (amount >= remainingDebt) {
+    showToast('💡 Сумма покрывает весь остаток — используйте кнопку «Закрыть весь»');
+    closeModal();
+    return;
+  }
+
+  const newDebt = remainingDebt - amount;
+  const oldRemainingMonths = data.months.length - firstUnpaid;
+  const monthlyRate = c.rate / 100 / 12;
+
+  let months1;
+  if (monthlyRate > 0) {
+    const x = 1 - (monthlyRate * newDebt) / c.payment;
+    if (x > 0) {
+      months1 = Math.ceil(-Math.log(x) / Math.log(1 + monthlyRate));
+    } else {
+      months1 = 1;
+    }
+  } else {
+    months1 = Math.ceil(newDebt / c.payment);
+  }
+  months1 = Math.max(1, months1);
+
+  const removedTails1 = Math.max(0, oldRemainingMonths - months1);
+
+  const scenario1Data = calcCreditData(c.payment, c.lastPaymentDate, c.rate, {
+    amount: newDebt,
+    payment: c.payment,
+    monthsCount: months1
+  });
+
+  const months2 = oldRemainingMonths;
+  let newPayment2;
+  if (monthlyRate > 0) {
+    newPayment2 = newDebt * monthlyRate / (1 - Math.pow(1 + monthlyRate, -months2));
+  } else {
+    newPayment2 = newDebt / months2;
+  }
+
+  const scenario2Data = calcCreditData(newPayment2, c.lastPaymentDate, c.rate, {
+    amount: newDebt,
+    payment: newPayment2,
+    monthsCount: months2
+  });
+
+  const baseRemainingInterest = data.months.slice(firstUnpaid).reduce(function(s, m) { return s + m.interest; }, 0);
+
+  const s1RemainingTotal = scenario1Data.total;
+  const s1RemainingInterest = scenario1Data.totalInterest;
+
+  const s2RemainingTotal = scenario2Data.total;
+  const s2RemainingInterest = scenario2Data.totalInterest;
+
+  const saved1 = baseRemainingInterest - s1RemainingInterest;
+  const saved2 = baseRemainingInterest - s2RemainingInterest;
+
+  let recommendation = '';
+  if (saved1 > saved2) {
+    recommendation = '🏆 <strong>Сценарий 1</strong> выгоднее по процентам на <strong>' +
+      formatMoney(saved1 - saved2) + '</strong>';
+  } else if (saved2 > saved1) {
+    recommendation = '🏆 <strong>Сценарий 2</strong> выгоднее по процентам на <strong>' +
+      formatMoney(saved2 - saved1) + '</strong>';
+  } else {
+    recommendation = '📊 Оба сценария дают одинаковую экономию по процентам';
+  }
+
+  const warn = hasEarlyRepaymentThisMonth(c) && !isAdmin();
+
+  const modal = document.getElementById('modalContent');
+  modal.innerHTML =
+    '<span class="modal-emoji">⚡</span>' +
+    '<h2>Варианты досрочного погашения</h2>' +
+    (warn ? '<div class="prelim-note warn">⚠️ В текущем месяце уже было досрочное погашение по этому кредиту. Следующее — в следующем месяце.</div>' : '') +
+    '<div class="prelim-note">' +
+      'Сумма досрочного погашения: <strong>' + formatMoney(amount) + '</strong><br>' +
+      'Остаток по телу кредита: <strong>' + formatMoney(remainingDebt) + '</strong><br>' +
+      'Остаток после погашения: <strong>' + formatMoney(newDebt) + '</strong>' +
+    '</div>' +
+
+    '<div class="scenario-card" data-action="choose-scenario" data-credit-id="' + id + '" data-scenario="1" data-amount="' + amount + '">' +
+      '<div class="scenario-title">📉 Сценарий 1 — Уменьшить срок</div>' +
+      '<div class="scenario-info">' +
+        'Платёж остаётся <strong>' + formatMoney(c.payment) + '</strong><br>' +
+        'Новый срок: <strong>' + months1 + ' мес.</strong>' +
+        (removedTails1 > 0 ? ' <span style="color:var(--gold);">(−' + removedTails1 + ' мес. с конца)</span>' : '') + '<br>' +
+        'Новая переплата: <strong>' + formatMoney(s1RemainingInterest) + '</strong><br>' +
+        'Общая сумма к выплате: <strong>' + formatMoney(s1RemainingTotal) + '</strong>' +
+      '</div>' +
+      '<div class="scenario-save">💰 Экономия на процентах: ' + formatMoney(saved1) + '</div>' +
+    '</div>' +
+
+    '<div class="scenario-card" data-action="choose-scenario" data-credit-id="' + id + '" data-scenario="2" data-amount="' + amount + '">' +
+      '<div class="scenario-title">📊 Сценарий 2 — Уменьшить платёж</div>' +
+      '<div class="scenario-info">' +
+        'Новый платёж: <span class="new-payment">' + formatMoney(newPayment2) + '</span> ' +
+        '<span class="decrease-tag">↓ меньше</span><br>' +
+        'Старый платёж: <span class="old-payment">' + formatMoney(c.payment) + '</span><br>' +
+        'Срок остаётся: <strong>' + months2 + ' мес.</strong><br>' +
+        'Новая переплата: <strong>' + formatMoney(s2RemainingInterest) + '</strong><br>' +
+        'Общая сумма к выплате: <strong>' + formatMoney(s2RemainingTotal) + '</strong>' +
+      '</div>' +
+      '<div class="scenario-save">💰 Экономия на процентах: ' + formatMoney(saved2) + '</div>' +
+    '</div>' +
+
+    '<div class="prelim-note gold" style="margin-top:8px;">' +
+      recommendation +
+    '</div>' +
+
+    '<div class="btn-row">' +
+      '<button class="btn ghost" id="modalCancelBtn">Отмена</button>' +
+    '</div>';
+
+  openModal();
+  document.getElementById('modalCancelBtn').onclick = closeModal;
+}
+
+function applyScenario(creditId, scenario, amountStr) {
+  const c = AppState.credits.find(function(x) { return x.id === creditId; });
+  if (!c || c.closed) return;
+
+  if (hasEarlyRepaymentThisMonth(c) && !isAdmin()) {
+    closeModal();
+    showPartialRepayWarning(creditId);
+    return;
+  }
+
+  const amount = parseFloat(amountStr);
+
+  const data = calcCreditData(c.payment, c.lastPaymentDate, c.rate);
+  const firstUnpaid = firstUnpaidIndex(c);
+  if (firstUnpaid < 0) return;
+
+  const currentMonth = data.months[firstUnpaid];
+  const remainingDebt = currentMonth.principal + currentMonth.remaining;
+  const newDebt = remainingDebt - amount;
+
+  const oldRemainingMonths = data.months.length - firstUnpaid;
+  const monthlyRate = c.rate / 100 / 12;
+
+  if (!c.originalPayment) c.originalPayment = c.payment;
+
+  let newPayment;
+  let newRemainingMonths;
+
+  if (scenario === 1) {
+    newPayment = c.payment;
+    if (monthlyRate > 0) {
+      const x = 1 - (monthlyRate * newDebt) / newPayment;
+      if (x > 0) {
+        newRemainingMonths = Math.ceil(-Math.log(x) / Math.log(1 + monthlyRate));
+      } else {
+        newRemainingMonths = 1;
+      }
+    } else {
+      newRemainingMonths = Math.ceil(newDebt / newPayment);
+    }
+    newRemainingMonths = Math.max(1, newRemainingMonths);
+  } else {
+    newRemainingMonths = oldRemainingMonths;
+    if (monthlyRate > 0) {
+      newPayment = newDebt * monthlyRate / (1 - Math.pow(1 + monthlyRate, -newRemainingMonths));
+    } else {
+      newPayment = newDebt / newRemainingMonths;
+    }
+  }
+
+  const removedTails = Math.max(0, oldRemainingMonths - newRemainingMonths);
+
+  const newStatus = [];
+
+  for (let i = 0; i < firstUnpaid; i++) {
+    newStatus.push(c.monthStatus[i] === 'early' ? 'early' : 'paid');
+  }
+
+  for (let i = 0; i < newRemainingMonths; i++) {
+    newStatus.push('unpaid');
+  }
+
+  const alreadyEarly = c.monthStatus.slice(firstUnpaid).filter(function(s) { return s === 'early'; }).length;
+  const totalEarlyTails = alreadyEarly + removedTails;
+
+  for (let i = 0; i < totalEarlyTails; i++) {
+    newStatus.push('early');
+  }
+
+  const expectedLength = c.monthStatus.length;
+  while (newStatus.length < expectedLength) {
+    newStatus.push('early');
+  }
+  if (newStatus.length > expectedLength) {
+    newStatus = newStatus.slice(0, expectedLength);
+  }
+
+  c.payment = newPayment;
+  c.monthStatus = newStatus;
+  c.monthsCount = newStatus.length;
+
+  const newData = calcCreditData(newPayment, c.lastPaymentDate, c.rate, {
+    payment: newPayment
+  });
+  c.amount = newData.total;
+  c.initialDebt = newData.initialDebt;
+  c.totalInterest = newData.totalInterest;
+
+  c.earlyRepayments.push({
+    amount: amount,
+    scenario: scenario,
+    date: new Date().toISOString(),
+    removedMonths: removedTails,
+    oldPayment: c.originalPayment || c.payment,
+    newPayment: newPayment
+  });
+
+  if (c.monthStatus.every(function(s) { return s !== 'unpaid'; })) {
+    c.closed = true;
+    c.closedAt = new Date().toISOString();
+    c.closedEarly = true;
+    showToast('🎉 Кредит полностью закрыт досрочно!');
+    triggerConfetti();
+  } else {
+    if (scenario === 1 && removedTails > 0) {
+      showToast('⚡ Срок сокращён на ' + removedTails + ' мес.!');
+    } else if (scenario === 2) {
+      showToast('📊 Платёж уменьшен: было ' + formatMoney(c.originalPayment || c.payment) + ' → стало ' + formatMoney(newPayment));
+    } else {
+      showToast('✅ Досрочное погашение применено');
+    }
+    triggerConfetti();
+  }
+
+  save();
+  closeModal();
+  renderCredits();
+}
+
+// ============================================================
+// ЗАКРЫТИЕ ВСЕГО КРЕДИТА
+// ============================================================
+function closeWholeCredit(id) {
+  const c = AppState.credits.find(function(x) { return x.id === id; });
+  if (!c || c.closed) return;
+
+  const data = calcCreditData(c.payment, c.lastPaymentDate, c.rate);
+  const modal = document.getElementById('modalContent');
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  let remaining = 0;
+  let earlyCount = 0;
+  data.months.forEach(function(m, i) {
+    if (c.monthStatus[i] === 'unpaid') {
+      remaining += m.payment;
+      const pDate = new Date(m.paymentDate);
+      pDate.setHours(0, 0, 0, 0);
+      if (pDate > today) earlyCount++;
+    }
+  });
+
+  modal.innerHTML =
+    '<span class="modal-emoji">⚠️</span>' +
+    '<h2>Закрыть весь кредит?</h2>' +
+    '<p>Ты уверен, что хочешь досрочно закрыть кредит <strong style="color:var(--gold);">«' + escapeHtml(c.name) + '»</strong> целиком?</p>' +
+    '<p>Сумма к погашению: <strong style="color:var(--green);font-size:1.15em;">' + formatMoney(remaining) + '</strong></p>' +
+    (earlyCount > 0 ? '<p style="color:var(--gold);font-size:0.9em;">⚡ ' + earlyCount + ' платежей будут отмечены как досрочные</p>' : '') +
+    '<div class="btn-row">' +
+      '<button class="btn ghost" id="modalCancelBtn">Отмена</button>' +
+      '<button class="btn gold" id="modalCloseBtn">Да, закрыть</button>' +
+    '</div>';
+  openModal();
+  document.getElementById('modalCancelBtn').onclick = closeModal;
+  document.getElementById('modalCloseBtn').onclick = function() { doCloseWholeCredit(id); };
+}
+
+function doCloseWholeCredit(id) {
+  const c = AppState.credits.find(function(x) { return x.id === id; });
+  if (!c) return;
+
+  const data = calcCreditData(c.payment, c.lastPaymentDate, c.rate);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  data.months.forEach(function(m, i) {
+    if (c.monthStatus[i] === 'unpaid') {
+      const pDate = new Date(m.paymentDate);
+      pDate.setHours(0, 0, 0, 0);
+      c.monthStatus[i] = pDate > today ? 'early' : 'paid';
+    }
+  });
+
+  c.closed = true;
+  c.closedAt = new Date().toISOString();
+  c.closedEarly = true;
+
+  save();
+  closeModal();
+  renderCredits();
+  showToast('🎉 Поздравляем! Кредит закрыт!');
+  triggerConfetti();
+}
+
+// ============================================================
+// АРХИВ
+// ============================================================
+function archiveCredit(id) {
+  const c = AppState.credits.find(function(x) { return x.id === id; });
+  if (!c || !c.closed) return;
+
+  const earlyCount = c.monthStatus.filter(function(s) { return s === 'early'; }).length;
+
+  const archiveEntry = {
+    id: c.id,
+    name: c.name,
+    payment: c.payment,
+    rate: c.rate,
+    amount: c.amount,
+    initialDebt: c.initialDebt,
+    totalInterest: c.totalInterest,
+    lastPaymentDate: c.lastPaymentDate,
+    closedAt: c.closedAt || new Date().toISOString(),
+    monthsCount: c.monthsCount,
+    closedEarly: c.closedEarly || earlyCount > 0,
+    earlyMonthsSaved: earlyCount,
+    archivedAt: new Date().toISOString()
+  };
+
+  AppState.archive.push(archiveEntry);
+  AppState.credits = AppState.credits.filter(function(x) { return x.id !== id; });
+  delete AppState.expandedCredits[id];
+  save();
+  renderCredits();
+  showToast('🏆 Кредит добавлен в архив достижений!');
+  triggerConfetti();
+}
+
+function renderArchive() {
+  const list = document.getElementById('archiveList');
+  if (!list) return;
+
+  if (AppState.archive.length === 0) {
+    list.innerHTML =
+      '<div class="empty-state">' +
+        '<span class="big-emoji">🏆</span>' +
+        'Архив пуст.<br>Закрытые кредиты будут здесь как память о твоих достижениях.' +
+      '</div>';
+    return;
+  }
+
+  const sorted = AppState.archive.slice().sort(function(a, b) {
+    return new Date(b.archivedAt) - new Date(a.archivedAt);
+  });
+
+  let html = '';
+  sorted.forEach(function(a) {
+    const early = a.closedEarly || a.earlyMonthsSaved > 0;
+    const badgeClass = early ? 'early' : 'ontime';
+    const badgeText = early
+      ? '⚡ Досрочно закрыт' + (a.earlyMonthsSaved > 0 ? ' (сэкономлено ' + a.earlyMonthsSaved + ' мес.)' : '')
+      : '✅ Закрыт по графику';
+
+    html += '<div class="credit-card archived">';
+    html += '<div class="credit-header">';
+    html += '<div class="credit-name">🏆 ' + escapeHtml(a.name) + '</div>';
+    html += '<div class="credit-status-badge badge-archived">Архив</div>';
+    html += '</div>';
+    html += '<div class="credit-info-row"><span class="label">Сумма кредита</span><span class="value">' + formatMoney(a.amount) + '</span></div>';
+    if (a.rate > 0) {
+      html += '<div class="credit-info-row"><span class="label">Ставка</span><span class="value">' + a.rate + '%</span></div>';
+    }
+    html += '<div class="credit-info-row"><span class="label">Платёж/мес</span><span class="value">' + formatMoney(a.payment) + '</span></div>';
+    html += '<div class="credit-info-row"><span class="label">Платежей</span><span class="value">' + a.monthsCount + '</span></div>';
+    html += '<div class="credit-info-row"><span class="label">Дата закрытия</span><span class="value">' + formatDateRu(new Date(a.closedAt)) + '</span></div>';
+    html += '<div style="text-align:center;margin-top:14px;"><span class="archive-badge ' + badgeClass + '">' + badgeText + '</span></div>';
+    html += '<div class="credit-actions" style="margin-top:16px;">';
+    html += '<button class="btn red small" data-action="delete-archive" data-credit-id="' + a.id + '">🗑 Удалить из архива</button>';
+    html += '</div>';
+    html += '</div>';
+  });
+
+  list.innerHTML = html;
+}
+
+function deleteArchive(id) {
+  const a = AppState.archive.find(function(x) { return x.id === id; });
+  if (!a) return;
+  const modal = document.getElementById('modalContent');
+  modal.innerHTML =
+    '<span class="modal-emoji">🗑</span>' +
+    '<h2>Удалить из архива?</h2>' +
+    '<p>Запись о кредите <strong>«' + escapeHtml(a.name) + '»</strong> будет удалена навсегда.</p>' +
+    '<div class="btn-row">' +
+      '<button class="btn ghost" id="modalCancelBtn">Отмена</button>' +
+      '<button class="btn red" id="modalDeleteBtn">Удалить</button>' +
+    '</div>';
+  openModal();
+  document.getElementById('modalCancelBtn').onclick = closeModal;
+  document.getElementById('modalDeleteBtn').onclick = function() {
+    AppState.archive = AppState.archive.filter(function(x) { return x.id !== id; });
+    save();
+    closeModal();
+    renderArchive();
+    renderCredits();
+    showToast('🗑 Удалено из архива');
+  };
+}
+
+function deleteCredit(id) {
+  const c = AppState.credits.find(function(x) { return x.id === id; });
+  if (!c) return;
+  const modal = document.getElementById('modalContent');
+  modal.innerHTML =
+    '<span class="modal-emoji">🗑</span>' +
+    '<h2>Удалить кредит?</h2>' +
+    '<p>Кредит <strong>«' + escapeHtml(c.name) + '»</strong> будет удалён. Это нельзя отменить.</p>' +
+    '<p style="font-size:0.85em;color:#a0a0c0;">💡 Если кредит закрыт — используй «🏆 В архив», чтобы сохранить его как достижение.</p>' +
+    '<div class="btn-row">' +
+      '<button class="btn ghost" id="modalCancelBtn">Отмена</button>' +
+      '<button class="btn red" id="modalDeleteBtn">Удалить</button>' +
+    '</div>';
+  openModal();
+  document.getElementById('modalCancelBtn').onclick = closeModal;
+  document.getElementById('modalDeleteBtn').onclick = function() { doDeleteCredit(id); };
+}
+
+function doDeleteCredit(id) {
+  AppState.credits = AppState.credits.filter(function(x) { return x.id !== id; });
+  delete AppState.expandedCredits[id];
+  save();
+  closeModal();
+  renderCredits();
+  showToast('🗑 Кредит удалён');
+}
+
+// ============================================================
+// АВТООБНОВЛЕНИЕ
+// ============================================================
+function autoUpdateCredits() {
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+  let changed = false;
+  AppState.credits.forEach(function(c) {
+    if (c.closed) return;
+    normalizeCredit(c);
+    const data = calcCreditData(c.payment, c.lastPaymentDate, c.rate);
+
+    data.months.forEach(function(m, i) {
+      if (c.monthStatus[i] !== 'unpaid') return;
+      const pDate = new Date(m.paymentDate);
+      pDate.setHours(0, 0, 0, 0);
+
+      if (pDate < today) {
+        c.monthStatus[i] = 'paid';
+        changed = true;
+        if (c.monthStatus.every(function(s) { return s !== 'unpaid'; })) {
+          c.closed = true;
+          c.closedAt = new Date().toISOString();
+        }
+      }
+    });
+  });
+
+  AppState.lastAutoUpdate = new Date().toISOString();
+  if (changed) save();
+}
+
+function scheduleAutoUpdate() {
+  const now = new Date();
+  const next = new Date();
+  next.setDate(now.getDate() + 1);
+  next.setHours(0, 1, 0, 0);
+  const delay = next - now;
+
+  setTimeout(function() {
+    autoUpdateCredits();
+    if (AppState.currentScreen === 'credits') renderCredits();
+    scheduleAutoUpdate();
+  }, Math.max(1000, delay));
+}
+
+// ============================================================
+// МИССИИ
+// ============================================================
+const MISSION_DEFS = {
+  m1: { id: 'm1', title: '1 месяц',   icon: '🌱', weeksCount: 4,  desc: 'Плати себе каждую неделю — 4 недели', subtitle: 'Первый шаг к привычке. Не важен размер — важен ритм.' },
+  m2: { id: 'm2', title: '2 месяца',  icon: '🌳', weeksCount: 8,  desc: 'Плати себе каждую неделю — 8 недель', subtitle: 'Укрепляем привычку. Ты уже в игре!' },
+  m3: { id: 'm3', title: '3 месяца',  icon: '🌲', weeksCount: 12, desc: 'Плати себе каждую неделю — 12 недель', subtitle: 'Дисциплина растёт. Ты становишься сильнее!' },
+  m4: { id: 'm4', title: '4 месяца',  icon: '🏔️', weeksCount: 16, desc: 'Плати себе каждую неделю — 16 недель', subtitle: 'Ты почти у цели. Ещё немного!' },
+  m5: { id: 'm5', title: '5 месяцев', icon: '👑', weeksCount: 20, desc: 'Плати себе каждую неделю — 20 недель', subtitle: 'Финальный уровень. Ты — мастер финансовой привычки!' }
+};
+
+const MISSION_ORDER = ['m1', 'm2', 'm3', 'm4', 'm5'];
+
+const MOTIVATION_PHRASES = [
+  '💪 Не важна сумма — важна привычка!',
+  '🌟 Ты платишь себе — это уже победа!',
+  '🔥 Маленькие шаги ведут к большим результатам!',
+  '💎 Каждая отложенная копейка — вклад в твою свободу!',
+  '🚀 Ты строишь свою финансовую подушку!',
+  '🎯 Дисциплина важнее мотивации. Ты — молодец!',
+  '✨ Богатые люди платят себе первыми!',
+  '🏆 Твоё будущее «Я» скажет тебе спасибо!',
+  '🌈 Привычка = твоя суперсила!',
+  '💚 Это не про деньги. Это про уважение к себе.',
+  '🌱 Маленькое семя сегодня — большое дерево завтра!',
+  '⚡ Ты сильнее, чем думаешь!',
+  '🧠 Ты программируешь свой мозг на изобилие!',
+  '🎁 Подари себе уверенность — плати себе регулярно!',
+  '💐 Ты создаёшь новую финансовую реальность!',
+  '🌊 Одна капля — не океан, но океан начинается с капли!',
+  '🔑 Каждая неделя — новый ключ к свободе!',
+  '🎨 Ты художник своей финансовой жизни!',
+  '🦋 Маленькое изменение — большое превращение!',
+  '🌟 Последовательность — мать успеха!'
+];
+
+const MISSED_PHRASES = [
+  '😔 Всем заплатил, а себе забыл...',
+  '💔 День прошёл — а ты себе не заплатил!',
+  '⏰ Упустил день. Отметь неделю сейчас!',
+  '🥺 Себе — самому важному — забыл...',
+  '📅 Пропущен день. Наверстай!',
+  '🙈 Опять не заплатил себе? Давай!',
+  '😢 День ушёл. Отметь и не повторяй!'
+];
+
+const WEEKDAYS = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+
+function getTodayWeekdayIndex() {
+  const jsDay = new Date().getDay();
+  return jsDay === 0 ? 6 : jsDay - 1;
+}
+
+let currentMissionId = null;
+
+function isMissionUnlocked(missionId) {
+  if (isAdmin()) return true;
+  const idx = MISSION_ORDER.indexOf(missionId);
+  if (idx <= 0) return true;
+  for (let i = 0; i < idx; i++) {
+    const prevId = MISSION_ORDER[i];
+    const prev = AppState.missions[prevId];
+    if (!prev || !prev.completed) return false;
+  }
+  return true;
+}
+
+function isMissionCompleted(missionId) {
+  const state = AppState.missions[missionId];
+  if (!state) return false;
+  return state.weeks.every(Boolean) || state.completed === true;
+}
+
+function missionSavedTotal(missionId) {
+  const state = AppState.missions[missionId];
+  if (!state || !Array.isArray(state.weekAmounts)) return 0;
+  return state.weekAmounts.reduce(function(s, v) { return s + (parseFloat(v) || 0); }, 0);
+}
+
+function canMarkWeek(state, i) {
+  if (state.weeks[i]) return false;
+  if (i > 0 && !state.weeks[i - 1]) return false;
+  if (state.weekday === null) return false;
+
+  if (isAdmin()) return true;
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  let availableFromDate;
+
+  if (i === 0) {
+    if (state.startedAt) {
+      const st = new Date(state.startedAt);
+      st.setHours(0, 0, 0, 0);
+      availableFromDate = nextWeekdayOnOrAfter(st, state.weekday);
+    } else {
+      return false;
+    }
+  } else {
+    const prevPaidDate = state.weekPaidDates[i - 1];
+    if (!prevPaidDate) return false;
+    const ppd = new Date(prevPaidDate);
+    ppd.setHours(0, 0, 0, 0);
+    const minDate = new Date(ppd);
+    minDate.setDate(minDate.getDate() + 7);
+    availableFromDate = nextWeekdayOnOrAfter(minDate, state.weekday);
+  }
+
+  return today >= availableFromDate;
+}
+
+function nextWeekdayOnOrAfter(d, weekdayIdx) {
+  const res = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  while (true) {
+    const jsDay = res.getDay();
+    const ourDay = jsDay === 0 ? 6 : jsDay - 1;
+    if (ourDay === weekdayIdx) return res;
+    res.setDate(res.getDate() + 1);
+  }
+}
+
+function isWeekMissed(state, i) {
+  if (state.weeks[i]) return false;
+  if (!state.active) return false;
+  if (isAdmin()) return false;
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  let dueDate;
+  if (i === 0) {
+    if (!state.startedAt) return false;
+    const st = new Date(state.startedAt);
+    st.setHours(0, 0, 0, 0);
+    const from = nextWeekdayOnOrAfter(st, state.weekday);
+    dueDate = new Date(from);
+    dueDate.setDate(dueDate.getDate() + 7);
+  } else {
+    const prevPaidDate = state.weekPaidDates[i - 1];
+    if (!prevPaidDate) return false;
+    const ppd = new Date(prevPaidDate);
+    ppd.setHours(0, 0, 0, 0);
+    const minDate = new Date(ppd);
+    minDate.setDate(minDate.getDate() + 7);
+    const from = nextWeekdayOnOrAfter(minDate, state.weekday);
+    dueDate = new Date(from);
+    dueDate.setDate(dueDate.getDate() + 7);
+  }
+
+  return today > dueDate;
+}
+
+function canEditWeekAmount(state, i) {
+  if (!state.weeks[i]) return false;
+
+  let lastPaidIdx = -1;
+  for (let j = 0; j < state.weeks.length; j++) {
+    if (state.weeks[j]) lastPaidIdx = j;
+  }
+  if (i !== lastPaidIdx) return false;
+
+  const paidDate = state.weekPaidDates[i];
+  if (!paidDate) return false;
+
+  const pd = new Date(paidDate);
+  const today = new Date();
+  return pd.getFullYear() === today.getFullYear()
+      && pd.getMonth() === today.getMonth()
+      && pd.getDate() === today.getDate();
+}
+
+function renderMissions() {
+  const list = document.getElementById('missionsList');
+  if (!list) return;
+
+  const todayWeekday = getTodayWeekdayIndex();
+
+  list.innerHTML = MISSION_ORDER.map(function(id) {
+    const m = MISSION_DEFS[id];
+    const state = AppState.missions[id];
+    const paidCount = state.weeks.filter(Boolean).length;
+    const total = m.weeksCount;
+    const progress = Math.round((paidCount / total) * 100);
+    const isReminderDay = state.active && state.weekday === todayWeekday;
+    const unlocked = isMissionUnlocked(id);
+    const completed = isMissionCompleted(id);
+    const saved = missionSavedTotal(id);
+
+    let hasMissed = false;
+    if (state.active && !isAdmin()) {
+      for (let i = 0; i < total; i++) {
+        if (isWeekMissed(state, i)) { hasMissed = true; break; }
+      }
+    }
+
+    let cls = 'mission-card';
+    if (!unlocked) cls += ' locked';
+    if (completed) cls += ' completed';
+
+    let html = '<div class="' + cls + '" ' +
+      (unlocked ? 'data-action="open-mission" data-mission-id="' + id + '"' : 'data-action="locked-mission" data-mission-id="' + id + '"') +
+      '>';
+
+    if (!unlocked) {
+      html += '<span class="lock-icon">🔒</span>';
+    }
+
+    html += '<div class="mission-title">' + m.icon + ' ' + m.title + (completed ? ' ✅' : '') + '</div>';
+    html += '<div class="mission-desc">' + m.desc + '</div>';
+
+    if (!unlocked) {
+      html += '<div style="margin-top:14px;font-size:0.85em;color:#a0a0c0;">🔒 Пройди предыдущие миссии, чтобы разблокировать</div>';
+    } else if (completed) {
+      html += '<div class="completed-banner">';
+      html += '<div class="cb-title">🏆 Пройдено!</div>';
+      html += '<div class="cb-amount">' + formatMoney(saved) + '</div>';
+      html += '<div class="cb-label">накоплено за ' + total + ' недель</div>';
+      html += '</div>';
+    } else if (state.active) {
+      if (isReminderDay && !state.weeks[paidCount]) {
+        html += '<div class="reminder-banner" style="margin-top:14px;margin-bottom:0;">';
+        html += '<div class="r-icon">🔔</div>';
+        html += '<div class="r-text">Сегодня твой день! Не забудь <strong>заплатить себе</strong>!</div>';
+        html += '</div>';
+      } else if (hasMissed) {
+        html += '<div class="reminder-banner missed" style="margin-top:14px;margin-bottom:0;">';
+        html += '<div class="r-icon">⚠️</div>';
+        html += '<div class="r-text"><strong>Всем заплатил, а себе забыл?</strong> Отметь неделю сейчас!</div>';
+        html += '</div>';
+      }
+      html += '<div style="margin-top:14px;font-size:0.85em;color:#a0a0c0;">';
+      if (state.weekday !== null) html += '📅 День: ' + WEEKDAYS[state.weekday] + ' • ';
+      html += paidCount + '/' + total + ' недель</div>';
+      html += '<div class="mission-progress-mini"><div class="mission-progress-mini-fill" style="width:' + progress + '%"></div></div>';
+      if (saved > 0) {
+        html += '<div class="mission-saved">💰 Накоплено: ' + formatMoney(saved) + '</div>';
+      }
+    } else {
+      html += '<div style="margin-top:14px;font-size:0.85em;color:var(--gold);">Нажми, чтобы начать →</div>';
+    }
+
+    html += '</div>';
+    return html;
+  }).join('');
+}
+
+function openMission(id) {
+  if (!isMissionUnlocked(id)) {
+    showToast('🔒 Сначала пройди предыдущие миссии');
+    return;
+  }
+  currentMissionId = id;
+  navigate('mission');
+}
+
+function showLockedMissionMsg(id) {
+  const idx = MISSION_ORDER.indexOf(id);
+  const prevId = MISSION_ORDER[idx - 1];
+  const prevM = MISSION_DEFS[prevId];
+  showToast('🔒 Сначала пройди «' + prevM.icon + ' ' + prevM.title + '»');
+}
+
+function openMissionWithWarning(id) {
+  if (!isMissionUnlocked(id)) {
+    showToast('🔒 Сначала пройди предыдущие миссии');
+    return;
+  }
+  const state = AppState.missions[id];
+  const m = MISSION_DEFS[id];
+  const completed = isMissionCompleted(id);
+
+  if (completed && !isAdmin()) {
+    const idx = MISSION_ORDER.indexOf(id);
+    const nextId = MISSION_ORDER[idx + 1];
+    let warningText = '';
+
+    if (nextId) {
+      const ns = AppState.missions[nextId];
+      const nextStarted = ns && (ns.active || ns.completed || ns.weeks.some(Boolean));
+      if (nextStarted) {
+        const nm = MISSION_DEFS[nextId];
+        warningText = '<div class="prelim-note warn">' +
+          '⚠️ Следующая миссия <strong>' + nm.icon + ' ' + nm.title + '</strong> уже начата или пройдена.<br>' +
+          'Если сбросить текущую пройденную миссию, следующая миссия <strong>заблокируется</strong>.' +
+          '</div>';
+      }
+    }
+
+    const modal = document.getElementById('modalContent');
+    modal.innerHTML =
+      '<span class="modal-emoji">🔓</span>' +
+      '<h2>Зайти в пройденную миссию?</h2>' +
+      '<p>Миссия <strong>' + m.icon + ' ' + m.title + '</strong> уже пройдена. Накоплено: <strong>' + formatMoney(missionSavedTotal(id)) + '</strong>.</p>' +
+      warningText +
+      '<p style="font-size:0.88em;color:#a0a0c0;">Внутри можно посмотреть детали или сбросить миссию.</p>' +
+      '<div class="btn-row">' +
+        '<button class="btn ghost" id="modalCancelBtn">Отмена</button>' +
+        '<button class="btn gold" id="modalConfirmBtn">Войти в миссию</button>' +
+      '</div>';
+    openModal();
+    document.getElementById('modalCancelBtn').onclick = closeModal;
+    document.getElementById('modalConfirmBtn').onclick = function() {
+      closeModal();
+      currentMissionId = id;
+      navigate('mission');
+    };
+    return;
+  }
+
+  currentMissionId = id;
+  navigate('mission');
+}
+
+function renderMission() {
+  if (!currentMissionId) return;
+  const m = MISSION_DEFS[currentMissionId];
+  const state = AppState.missions[m.id];
+  const content = document.getElementById('missionContent');
+  if (!content) return;
+
+  const paidCount = state.weeks.filter(Boolean).length;
+  const total = m.weeksCount;
+  const progress = Math.round((paidCount / total) * 100);
+  const todayWeekday = getTodayWeekdayIndex();
+  const saved = missionSavedTotal(m.id);
+  const completed = isMissionCompleted(m.id);
+
+  let currentWeekIdx = -1;
+  for (let i = 0; i < total; i++) {
+    if (!state.weeks[i] && canMarkWeek(state, i)) {
+      currentWeekIdx = i;
+      break;
+    }
+  }
+
+  let firstMissedIdx = -1;
+  if (state.active && !isAdmin()) {
+    for (let i = 0; i < total; i++) {
+      if (isWeekMissed(state, i)) { firstMissedIdx = i; break; }
+    }
+  }
+
+  const isReminderDay = state.active && state.weekday === todayWeekday;
+
+  if (!state.active) {
+    let html = '<h2>' + m.icon + ' ' + m.title + '</h2>';
+    html += '<p style="text-align:center;">' + m.subtitle + '</p>';
+    html += '<div class="motivation-card" style="margin-top:20px;">';
+    html += '<span class="mot-icon">🎯</span>';
+    html += '<div class="mot-text">' + randomMotivation() + '</div>';
+    html += '</div>';
+    html += '<div class="form-group" style="margin-top:20px;">';
+    html += '<label>Выбери день недели для «платежа себе»</label>';
+    html += '<div class="weekday-select">';
+    html += WEEKDAYS.map(function(d, i) {
+      return '<div class="weekday-btn ' + (state.weekday === i ? 'selected' : '') + '" data-action="select-weekday" data-weekday="' + i + '">' + d + '</div>';
+    }).join('');
+    html += '</div>';
+    html += '<div class="date-hint">В этот день недели приложение будет напоминать тебе заплатить себе. Отмечать можно начиная с этого дня (или позже).</div>';
+    html += '</div>';
+    html += '<button class="btn green" style="margin-top:20px;" data-action="start-mission">🚀 Начать миссию</button>';
+    content.innerHTML = html;
+    return;
+  }
+
+  let html = '<h2>' + m.icon + ' ' + m.title + '</h2>';
+  html += '<p style="text-align:center;">' + m.subtitle + '</p>';
+
+  html += '<div class="savings-display" style="margin-top:20px;">';
+  html += '<div class="sd-label">💰 Ты накопил</div>';
+  html += '<div class="sd-amount">' + formatMoney(saved) + '</div>';
+  html += '<div class="sd-sub">' + paidCount + ' из ' + total + ' недель · цель «платить себе»</div>';
+  html += '</div>';
+
+  if (isReminderDay && currentWeekIdx >= 0) {
+    html += '<div class="reminder-banner">';
+    html += '<div class="r-icon">🔔</div>';
+    html += '<div class="r-text">Сегодня <strong>' + WEEKDAYS[todayWeekday] + '</strong> — твой день!<br>Отметь неделю ' + (currentWeekIdx + 1) + ' ниже ⬇️</div>';
+    html += '</div>';
+  } else if (firstMissedIdx >= 0) {
+    html += '<div class="reminder-banner missed">';
+    html += '<div class="r-icon">😔</div>';
+    html += '<div class="r-text"><strong>Всем заплатил, а себе забыл?</strong><br>Неделя ' + (firstMissedIdx + 1) + ' просрочена. Отметь её сейчас ⬇️</div>';
+    html += '</div>';
+  }
+
+  html += '<div class="motivation-card">';
+  html += '<span class="mot-icon">💫</span>';
+  html += '<div class="mot-text">' + randomMotivation() + '</div>';
+  html += '</div>';
+
+  html += '<div class="progress-stat"><span>Прогресс</span><span>' + paidCount + ' / ' + total + '</span></div>';
+  html += '<div class="progress-bar-big"><div class="progress-bar-big-fill" style="width:' + progress + '%"></div></div>';
+
+  html += '<div style="margin-top:20px;"><p style="text-align:center;color:#a0a0c0;font-size:0.85em;">';
+  if (isAdmin()) {
+    html += '👑 <strong style="color:var(--gold);">Режим администратора:</strong> все недели доступны для отметки.';
+  } else {
+    html += 'Отмечай каждую неделю — <strong style="color:var(--gold);">начиная с выбранного дня</strong>. Раньше — нельзя.';
+  }
+  if (state.weekday !== null) {
+    html += '<br>📅 Твой день: <strong style="color:var(--gold);">' + WEEKDAYS[state.weekday] + '</strong>';
+  }
+  html += '</p></div>';
+
+  html += '<div class="weeks-grid">';
+  html += state.weeks.map(function(paid, i) {
+    const isPaid = paid;
+    const isCurrent = (i === currentWeekIdx);
+    const missed = isWeekMissed(state, i);
+    const accessible = canMarkWeek(state, i);
+    const editable = canEditWeekAmount(state, i);
+
+    let classes = 'week-item';
+    if (isPaid) classes += ' paid';
+    else if (missed) classes += ' missed';
+    else if (isCurrent) classes += ' current';
+    else if (!accessible) classes += ' locked';
+    if (editable) classes += ' today-editable';
+
+    let weekHint = '';
+    let checkSymbol = '⬜';
+
+    const amount = (state.weekAmounts && state.weekAmounts[i]) || 0;
+
+    if (isPaid) {
+      checkSymbol = '✅';
+      if (editable) {
+        weekHint = 'Нажми для корректировки';
+      } else {
+        weekHint = 'Взнос учтён';
+      }
+    } else if (missed) {
+      checkSymbol = '⚠️';
+      weekHint = MISSED_PHRASES[i % MISSED_PHRASES.length];
+    } else if (isCurrent) {
+      checkSymbol = '👆';
+      weekHint = 'Нажми, чтобы отметить';
+    } else if (!accessible) {
+      checkSymbol = '🔒';
+      let openDate = null;
+      if (i === 0) {
+        if (state.startedAt) {
+          const st = new Date(state.startedAt);
+          st.setHours(0, 0, 0, 0);
+          openDate = nextWeekdayOnOrAfter(st, state.weekday);
+        }
+      } else if (state.weekPaidDates[i - 1]) {
+        const ppd = new Date(state.weekPaidDates[i - 1]);
+        ppd.setHours(0, 0, 0, 0);
+        const minDate = new Date(ppd);
+        minDate.setDate(minDate.getDate() + 7);
+        openDate = nextWeekdayOnOrAfter(minDate, state.weekday);
+      }
+      if (openDate) {
+        weekHint = 'Откроется ' + formatDateShort(openDate);
+      } else {
+        weekHint = 'Сначала предыдущая';
+      }
+    } else {
+      checkSymbol = '👆';
+      weekHint = 'Можно отметить';
+    }
+
+    let savedHtml = '';
+    if (isPaid && amount > 0) {
+      savedHtml = '<div class="week-saved">' + formatMoney(amount) + '</div>';
+    }
+    let editHint = '';
+    if (editable) {
+      editHint = '<div class="week-edit-hint">✏️ Изменить</div>';
+    }
+
+    let action = 'toggle-week';
+    if (!accessible && !isPaid) action = 'week-locked';
+    if (isPaid) {
+      if (editable) action = 'week-edit';
+      else action = 'week-view';
+    }
+
+    return '<div class="' + classes + '" ' +
+      'data-action="' + action + '" data-week="' + i + '"' +
+      '>' +
+      '<div class="week-number">' + (i + 1) + '</div>' +
+      '<div class="week-label">Неделя</div>' +
+      '<div class="week-check">' + checkSymbol + '</div>' +
+      savedHtml +
+      editHint +
+      '<div class="week-hint">' + weekHint + '</div>' +
+    '</div>';
+  }).join('');
+  html += '</div>';
+
+  if (completed) {
+    html += '<div class="completed-banner" style="margin-top:20px;">';
+    html += '<div class="cb-title">🏆 Миссия пройдена!</div>';
+    html += '<div class="cb-amount">' + formatMoney(saved) + '</div>';
+    html += '<div class="cb-label">накоплено за ' + total + ' недель</div>';
+    html += '</div>';
+  }
+
+  html += '<button class="btn ghost small" style="margin-top:20px;width:100%;" data-action="reset-mission">🔄 Сбросить миссию</button>';
+  content.innerHTML = html;
+}
+
+function selectWeekday(i) {
+  const state = AppState.missions[currentMissionId];
+  state.weekday = i;
+  save();
+  renderMission();
+}
+
+function startMission() {
+  const state = AppState.missions[currentMissionId];
+  if (state.weekday === null) {
+    showToast('⚠️ Выбери день недели');
+    return;
+  }
+  state.active = true;
+  state.startedAt = new Date().toISOString();
+  state.weekPaidDates = state.weeks.map(function() { return null; });
+  state.weekAmounts = state.weeks.map(function() { return 0; });
+  save();
+  renderMission();
+  renderMissions();
+  showToast('🚀 Миссия началась! Плати себе!');
+
+  checkMissionReminder(currentMissionId);
+}
+
+function weekLockedClick(i) {
+  showToast('🔒 Ещё рано! Отметь неделю ' + (i + 1) + ' в твой день недели.');
+}
+
+function viewPaidWeek(i) {
+  const state = AppState.missions[currentMissionId];
+  const amount = state.weekAmounts[i] || 0;
+  const paidDate = state.weekPaidDates[i];
+  const modal = document.getElementById('modalContent');
+  modal.innerHTML =
+    '<span class="modal-emoji">✅</span>' +
+    '<h2>Взнос учтён</h2>' +
+    '<div class="prelim-note green">' +
+      '💰 Сумма: <strong>' + formatMoney(amount) + '</strong><br>' +
+      (paidDate ? '📅 Внесено: <strong>' + formatDateRu(new Date(paidDate)) + '</strong><br>' : '') +
+    '</div>' +
+    '<p style="font-size:0.9em;color:#a0a0c0;">Корректировка суммы возможна только день в день — в день внесения.</p>' +
+    '<div class="btn-row">' +
+      '<button class="btn gold" id="modalOkBtn">Понятно</button>' +
+    '</div>';
+  openModal();
+  document.getElementById('modalOkBtn').onclick = closeModal;
+}
+
+function editWeekAmount(i) {
+  const state = AppState.missions[currentMissionId];
+  if (!canEditWeekAmount(state, i)) {
+    viewPaidWeek(i);
+    return;
+  }
+  const prevAmount = state.weekAmounts[i] || 0;
+  const modal = document.getElementById('modalContent');
+  modal.innerHTML =
+    '<span class="modal-emoji">✏️</span>' +
+    '<h2>Корректировка суммы</h2>' +
+    '<p style="font-size:0.9em;color:#a0a0c0;">Неделя ' + (i + 1) + '. Текущий взнос: <strong>' + formatMoney(prevAmount) + '</strong></p>' +
+    '<div class="prelim-note gold">' +
+      '💡 Корректировка доступна только <strong>сегодня</strong>, в день внесения. После — сумма фиксируется.' +
+    '</div>' +
+    '<div class="form-group">' +
+      '<label>Новая сумма, ₽</label>' +
+      '<input type="number" id="inpEditAmount" min="1" step="1" inputmode="numeric" value="' + prevAmount + '">' +
+    '</div>' +
+    '<div class="btn-row">' +
+      '<button class="btn ghost" id="modalCancelBtn">Отмена</button>' +
+      '<button class="btn green" id="modalSaveEditBtn">✅ Сохранить</button>' +
+    '</div>';
+  openModal();
+  document.getElementById('modalCancelBtn').onclick = closeModal;
+  document.getElementById('modalSaveEditBtn').onclick = function() {
+    const val = parseFloat(document.getElementById('inpEditAmount').value);
+    if (!val || val <= 0) {
+      showToast('⚠️ Заплати себе хоть 1 ₽ — но не 0!');
+      return;
+    }
+    state.weekAmounts[i] = val;
+    save();
+    closeModal();
+    renderMission();
+    renderMissions();
+    showToast('✏️ Сумма обновлена: ' + formatMoney(val));
+  };
+  setTimeout(function() {
+    const inp = document.getElementById('inpEditAmount');
+    if (inp) inp.focus();
+  }, 200);
+}
+
+function toggleWeek(i) {
+  const state = AppState.missions[currentMissionId];
+
+  if (!canMarkWeek(state, i)) {
+    weekLockedClick(i);
+    return;
+  }
+
+  if (!state.weeks[i]) {
+    openWeekAmountModal(i);
+  }
+}
+
+function openWeekAmountModal(weekIdx) {
+  const state = AppState.missions[currentMissionId];
+  const m = MISSION_DEFS[currentMissionId];
+  const modal = document.getElementById('modalContent');
+  const prevAmount = state.weekAmounts[weekIdx] || 0;
+
+  modal.innerHTML =
+    '<span class="modal-emoji">💰</span>' +
+    '<h2>Сколько заплатил себе?</h2>' +
+    '<p style="font-size:0.9em;color:#a0a0c0;">Неделя ' + (weekIdx + 1) + ' из ' + m.weeksCount + ' · ' + m.icon + ' ' + m.title + '</p>' +
+    '<div class="form-group" style="margin-top:14px;">' +
+      '<label>Внесённая сумма за эту неделю, ₽</label>' +
+      '<input type="number" id="inpWeekAmount" placeholder="10" min="1" step="1" inputmode="numeric" value="' + (prevAmount || '') + '">' +
+    '</div>' +
+    '<div class="prelim-note green">' +
+      '💡 <strong>Сумма не важна, важна привычка!</strong><br>' +
+      'Я уверен, ты сможешь сегодня заплатить себе. Сделай это и продолжай, каждый вложенный рубль — это шаг к достижению цели. Главное — не прерывать привычку!' +
+    '</div>' +
+    '<div class="btn-row">' +
+      '<button class="btn ghost" id="modalCancelBtn">Отмена</button>' +
+      '<button class="btn green" id="modalSaveAmountBtn">✅ Отметить неделю</button>' +
+    '</div>';
+  openModal();
+  document.getElementById('modalCancelBtn').onclick = closeModal;
+  document.getElementById('modalSaveAmountBtn').onclick = function() {
+    const val = parseFloat(document.getElementById('inpWeekAmount').value);
+    if (!val || val <= 0) {
+      showToast('⚠️ Заплати себе хоть 1 ₽ — но не 0!');
+      return;
+    }
+    confirmWeekMark(weekIdx, val);
+  };
+  setTimeout(function() {
+    const inp = document.getElementById('inpWeekAmount');
+    if (inp) inp.focus();
+  }, 200);
+}
+
+function confirmWeekMark(weekIdx, amount) {
+  const state = AppState.missions[currentMissionId];
+  if (!state) return;
+
+  state.weeks[weekIdx] = true;
+  state.weekAmounts[weekIdx] = Math.max(0, parseFloat(amount) || 0);
+  state.weekPaidDates[weekIdx] = new Date().toISOString();
+
+  const phrase = MOTIVATION_PHRASES[Math.floor(Math.random() * MOTIVATION_PHRASES.length)];
+  closeModal();
+
+  if (amount > 0) {
+    showToast('✅ ' + formatMoney(amount) + ' отложено! ' + phrase);
+  } else {
+    showToast('✅ Неделя отмечена. ' + phrase);
+  }
+
+  if (state.weeks.every(Boolean)) {
+    state.completed = true;
+    state.completedAt = new Date().toISOString();
+    const total = missionSavedTotal(currentMissionId);
+    setTimeout(function() {
+      showToast('🎉 Миссия пройдена! Накоплено: ' + formatMoney(total));
+      triggerConfetti();
+    }, 1200);
+  }
+
+  save();
+  renderMission();
+  renderMissions();
+}
+
+function checkMissionReminder(missionId) {
+  if (!missionId) return;
+  const m = MISSION_DEFS[missionId];
+  const state = AppState.missions[missionId];
+  if (!state.active) return;
+
+  const todayWeekday = getTodayWeekdayIndex();
+  const todayKey = new Date().toISOString().slice(0, 10);
+
+  if (state.weekday === todayWeekday && state.lastReminderDate !== todayKey) {
+    let currentWeekIdx = -1;
+    for (let i = 0; i < state.weeks.length; i++) {
+      if (!state.weeks[i] && canMarkWeek(state, i)) {
+        currentWeekIdx = i;
+        break;
+      }
+    }
+    if (currentWeekIdx >= 0) {
+      state.lastReminderDate = todayKey;
+      save();
+      setTimeout(function() {
+        showReminderToast('🔔 ' + m.title + ': сегодня твой день — заплати себе!');
+      }, 1500);
+    }
+  }
+}
+
+function showReminderToast(text) {
+  const t = document.getElementById('toast');
+  if (!t) return;
+  t.textContent = text;
+  t.classList.add('show', 'reminder');
+  t.classList.remove('warn');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function() {
+    t.classList.remove('show', 'reminder');
+  }, 6000);
+}
+
+function checkAllReminders() {
+  Object.keys(AppState.missions).forEach(function(id) {
+    checkMissionReminder(id);
+  });
+}
+
+function resetMission() {
+  const state = AppState.missions[currentMissionId];
+  const idx = MISSION_ORDER.indexOf(currentMissionId);
+
+  const nextId = MISSION_ORDER[idx + 1];
+  let extra = '';
+  if (nextId) {
+    const ns = AppState.missions[nextId];
+    if (ns && (ns.active || ns.completed || ns.weeks.some(Boolean))) {
+      const nm = MISSION_DEFS[nextId];
+      extra = '<div class="prelim-note warn">⚠️ После сброса будет заблокирована следующая миссия: <strong>' + nm.icon + ' ' + nm.title + '</strong>.</div>';
+    }
+  }
+
+  const modal = document.getElementById('modalContent');
+  modal.innerHTML =
+    '<span class="modal-emoji">🔄</span>' +
+    '<h2>Сбросить миссию?</h2>' +
+    '<p>Весь прогресс миссии будет обнулён. Накопленная сумма тоже сбросится.</p>' +
+    extra +
+    '<div class="btn-row">' +
+      '<button class="btn ghost" id="modalCancelBtn">Отмена</button>' +
+      '<button class="btn red" id="modalResetBtn">Сбросить</button>' +
+    '</div>';
+  openModal();
+  document.getElementById('modalCancelBtn').onclick = closeModal;
+  document.getElementById('modalResetBtn').onclick = doResetMission;
+}
+
+function doResetMission() {
+  const state = AppState.missions[currentMissionId];
+  state.active = false;
+  state.weekday = null;
+  state.weeks = Array(state.weeks.length).fill(false);
+  state.weekAmounts = Array(state.weeks.length).fill(0);
+  state.startedAt = null;
+  state.lastReminderDate = null;
+  state.weekPaidDates = state.weeks.map(function() { return null; });
+  state.completed = false;
+  state.completedAt = null;
+  save();
+  closeModal();
+  renderMission();
+  renderMissions();
+  showToast('🔄 Миссия сброшена');
+}
+
+// ============================================================
+// УТИЛИТЫ
+// ============================================================
+function formatMoney(n) {
+  return new Intl.NumberFormat('ru-RU').format(Math.round(n || 0)) + ' ₽';
+}
+
+function formatDateRu(d) {
+  if (!d) return '-';
+  const date = new Date(d);
+  return date.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
+}
+
+function formatDateShort(d) {
+  if (!d) return '-';
+  const date = new Date(d);
+  return date.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' });
+}
+
+function daysUntil(date) {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const d = new Date(date);
+  d.setHours(0, 0, 0, 0);
+  return Math.round((d - today) / 86400000);
+}
+
+function daysWord(n) {
+  const abs = Math.abs(n);
+  if (abs % 10 === 1 && abs % 100 !== 11) return 'день';
+  if ([2, 3, 4].indexOf(abs % 10) >= 0 && [12, 13, 14].indexOf(abs % 100) < 0) return 'дня';
+  return 'дней';
+}
+
+function escapeHtml(s) {
+  const div = document.createElement('div');
+  div.textContent = s;
+  return div.innerHTML;
+}
+
+function randomMotivation() {
+  return MOTIVATION_PHRASES[Math.floor(Math.random() * MOTIVATION_PHRASES.length)];
+}
+
+// ============================================================
+// МОДАЛКИ
+// ============================================================
+function openModal() {
+  const o = document.getElementById('modalOverlay');
+  if (o) o.classList.add('show');
+}
+
+function closeModal() {
+  const o = document.getElementById('modalOverlay');
+  if (o) o.classList.remove('show');
+}
+
+// ============================================================
+// TOAST
+// ============================================================
+let toastTimer = null;
+function showToast(text) {
+  const t = document.getElementById('toast');
+  if (!t) return;
+  t.textContent = text;
+  t.classList.add('show');
+  t.classList.remove('reminder', 'warn');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function() { t.classList.remove('show'); }, 3200);
+}
+
+// ============================================================
+// КОНФЕТТИ
+// ============================================================
+function triggerConfetti() {
+  const colors = ['#ffd700', '#ff69b4', '#00ffff', '#00ff88', '#ff4500'];
+  for (let i = 0; i < 60; i++) {
+    const el = document.createElement('div');
+    el.style.cssText =
+      'position: fixed;' +
+      'left: ' + (Math.random() * 100) + 'vw;' +
+      'top: -20px;' +
+      'width: 8px;height: 8px;' +
+      'background: ' + colors[Math.floor(Math.random() * colors.length)] + ';' +
+      'border-radius: ' + (Math.random() > 0.5 ? '50%' : '0') + ';' +
+      'pointer-events: none;z-index: 9999;' +
+      'transition: transform 3s linear, opacity 3s;';
+    document.body.appendChild(el);
+    (function(el) {
+      requestAnimationFrame(function() {
+        el.style.transform = 'translateY(' + (window.innerHeight + 40) + 'px) rotate(' + (Math.random() * 720) + 'deg)';
+        el.style.opacity = '0';
+      });
+      setTimeout(function() { el.remove(); }, 3500);
+    })(el);
+  }
+}
+
+// ============================================================
+// ДЕЛЕГИРОВАНИЕ СОБЫТИЙ
+// ============================================================
+function setupEventDelegation() {
+  document.addEventListener('click', function(e) {
+    if (e.target.closest('#backBtn')) {
+      e.preventDefault();
+      e.stopPropagation();
+      goBack();
+      return;
+    }
+
+    if (e.target.closest('#roleBtn')) {
+      e.preventDefault();
+      e.stopPropagation();
+      toggleRole();
+      return;
+    }
+
+    if (e.target.id === 'modalOverlay') {
+      closeModal();
+      return;
+    }
+
+    const target = e.target.closest('[data-action]');
+    if (target) {
+      const action = target.getAttribute('data-action');
+      e.preventDefault();
+      e.stopPropagation();
+
+      if (action === 'back') {
+        goBack();
+      } else if (action === 'toggle-role') {
+        toggleRole();
+      } else if (action === 'go-menu') {
+        navigate('menu');
+      } else if (action === 'navigate') {
+        navigate(target.getAttribute('data-screen'));
+      } else if (action === 'add-credit') {
+        openAddCredit();
+      } else if (action === 'open-archive') {
+        navigate('archive');
+      } else if (action === 'toggle-credit') {
+        toggleCreditCard(Number(target.getAttribute('data-credit-id')));
+      } else if (action === 'toggle-months') {
+        toggleMonths(Number(target.getAttribute('data-credit-id')));
+      } else if (action === 'partial-repay') {
+        openPartialRepay(Number(target.getAttribute('data-credit-id')));
+      } else if (action === 'partial-repay-warn') {
+        showPartialRepayWarning(Number(target.getAttribute('data-credit-id')));
+      } else if (action === 'choose-scenario') {
+        applyScenario(
+          Number(target.getAttribute('data-credit-id')),
+          Number(target.getAttribute('data-scenario')),
+          target.getAttribute('data-amount')
+        );
+      } else if (action === 'close-credit') {
+        closeWholeCredit(Number(target.getAttribute('data-credit-id')));
+      } else if (action === 'delete-credit') {
+        deleteCredit(Number(target.getAttribute('data-credit-id')));
+      } else if (action === 'archive-credit') {
+        archiveCredit(Number(target.getAttribute('data-credit-id')));
+      } else if (action === 'delete-archive') {
+        deleteArchive(Number(target.getAttribute('data-credit-id')));
+      } else if (action === 'open-mission') {
+        openMissionWithWarning(target.getAttribute('data-mission-id'));
+      } else if (action === 'locked-mission') {
+        showLockedMissionMsg(target.getAttribute('data-mission-id'));
+      } else if (action === 'select-weekday') {
+        selectWeekday(Number(target.getAttribute('data-weekday')));
+      } else if (action === 'start-mission') {
+        startMission();
+      } else if (action === 'toggle-week') {
+        toggleWeek(Number(target.getAttribute('data-week')));
+      } else if (action === 'week-locked') {
+        weekLockedClick(Number(target.getAttribute('data-week')));
+      } else if (action === 'week-edit') {
+        editWeekAmount(Number(target.getAttribute('data-week')));
+      } else if (action === 'week-view') {
+        viewPaidWeek(Number(target.getAttribute('data-week')));
+      } else if (action === 'reset-mission') {
+        resetMission();
+      } else if (action === 'enable-notifications') {
+        hidePermissionBanner();
+        requestNotificationPermission();
+      } else if (action === 'skip-notifications') {
+        hidePermissionBanner();
+        try { localStorage.setItem('notifications_skipped', Date.now()); } catch (e) {}
+      }
+      return;
+    }
+  }, true);
+}
+
+// ============================================================
+// ИНИЦИАЛИЗАЦИЯ
+// ============================================================
+function init() {
+  console.log('🚀 init() start');
+  load();
+  AppState.credits.forEach(normalizeCredit);
+  autoUpdateCredits();
+  setupEventDelegation();
+  updateRoleBtn();
+  initNotifications();
+
+  document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
+  const welcome = document.getElementById('screen-welcome');
+  if (welcome) welcome.classList.add('active');
+  AppState.currentScreen = 'welcome';
+  AppState.screenHistory = [];
+  updateBackBtn();
+
+  scheduleAutoUpdate();
+
+  setTimeout(checkAllReminders, 2000);
+  setInterval(function() {
+    autoUpdateCredits();
+    checkAllReminders();
+    if (AppState.currentScreen === 'credits') renderCredits();
+    if (AppState.currentScreen === 'missions') renderMissions();
+    if (AppState.currentScreen === 'mission') renderMission();
+  }, 60 * 1000);
+
+  window.addEventListener('popstate', function() {
+    if (AppState.screenHistory.length > 0) goBack();
+  });
+
+  console.log('✅ App initialized successfully');
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}
+
+// Экспорт
+window.navigate = navigate;
+window.goBack = goBack;
+window.openAddCredit = openAddCredit;
+window.addCredit = addCredit;
+window.toggleCreditCard = toggleCreditCard;
+window.toggleMonths = toggleMonths;
+window.openPartialRepay = openPartialRepay;
+window.showPartialScenarios = showPartialScenarios;
+window.applyScenario = applyScenario;
+window.showPartialRepayWarning = showPartialRepayWarning;
+window.closeWholeCredit = closeWholeCredit;
+window.doCloseWholeCredit = doCloseWholeCredit;
+window.deleteCredit = deleteCredit;
+window.doDeleteCredit = doDeleteCredit;
+window.archiveCredit = archiveCredit;
+window.deleteArchive = deleteArchive;
+window.openMission = openMission;
+window.openMissionWithWarning = openMissionWithWarning;
+window.showLockedMissionMsg = showLockedMissionMsg;
+window.selectWeekday = selectWeekday;
+window.startMission = startMission;
+window.toggleWeek = toggleWeek;
+window.weekLockedClick = weekLockedClick;
+window.viewPaidWeek = viewPaidWeek;
+window.editWeekAmount = editWeekAmount;
+window.openWeekAmountModal = openWeekAmountModal;
+window.confirmWeekMark = confirmWeekMark;
+window.resetMission = resetMission;
+window.doResetMission = doResetMission;
+window.closeModal = closeModal;
+window.toggleRole = toggleRole;
+window.requestNotificationPermission = requestNotificationPermission;
+window.checkAndShowReminder = checkAndShowReminder;
+window.showLocalNotification = showLocalNotification;
+
+</script>
+</body>
+</html>
